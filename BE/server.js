@@ -1,0 +1,302 @@
+const express = require('express');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const app = express();
+const JWT_SECRET = 'product_MANAGER_SECRET';
+const port = 5100;
+app.use(cors());
+app.use(express.json());
+
+//format day 
+const formatDay = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+
+    const formattedDate = `${day}/${month}/${year}`;
+    return formattedDate;
+}
+
+let categories = [
+    {
+    id : 1, name: "Đồng hồ" , img: "https://camerasieunho9x.com/wp-content/uploads/2016/06/dong-ho-camera-w5000.jpg"
+    },
+     {
+    id : 2, name: "Điện thoại" , img: "https://cdn.nguyenkimmall.com/images/product/829/dien-thoai-iphone-14-pro-max-1tb-tim-1.jpg"
+    },
+     {
+    id : 3, name: "Đồ dùng tiện ích" , img: "https://linhanhmart.com/wp-content/uploads/2019/01/COMBO-5.jpg"
+    },
+     {
+    id : 4, name: "Đồ trẻ em" , img: "https://m.yodycdn.com/blog/quan-ao-tre-em-10-tuoi-yodyvn6.jpg"
+    },
+     {
+    id : 5, name: "Thời trang nam" , img: "https://dongphuchaianh.vn/wp-content/uploads/2021/07/thoi-trang-nam-mua-he-1-1.jpg"
+    },
+     {
+    id : 6, name: "Thời trang nữ", img: "https://sakurafashion.vn/upload/a/3808-nem-fashion-1870.webp"
+    },
+     {
+    id : 7, name: "Nước hoa", img: "https://www.elle.vn/app/uploads/2019/03/29/nuoc-hoa-mua-he-01.jpg"
+    },
+     {
+    id : 8, name: "Đồ ăn vặt", img: "https://bloganchoi.com/wp-content/uploads/2020/05/an-vat.jpg"
+    },
+    {
+    id : 9, name: "Máy ảnh", img: "https://zshop.vn/blogs/wp-content/uploads/2019/04/4.png"
+    },
+     {
+    id : 10, name: "Dụng cụ thể thao", img: "https://png.pngtree.com/png-clipart/20230309/original/pngtree-three-dimensional-simulation-volleyball-ball-png-image_8979475.png"
+    },
+    {
+    id : 11, name: "Máy tính & Laptop", img: "https://chanchinh.vn/vnt_upload/product/04_2023/2_17.png"
+    },
+     {
+    id : 12, name: "Sách", img: "https://thuthuatnhanh.com/wp-content/uploads/2021/11/Hinh-anh-cuon-sach-mo-ra-dep-nhat.jpg"
+    },
+]
+
+let news = [
+    {
+        id: 1 , title: "King James mang đôi OFF-WHITE x Nike Air Force 1 University Yellow của Virgil Abloh có gì đặc biệt?" , author: "Nguyễn Anh Dũng" , content: "OFF-WHITE x Nike Air Force 1 University Yellow là đôi sneakers được hé lộ trong website public—domain.com, một websit..." , created: formatDay() , img: "https://tse4.mm.bing.net/th?id=OIP.sTmhOfGi-ZOIk9ILwqrvdwHaEK&pid=Api&P=0&h=180"
+    },
+    {
+        id: 2 , title: "Hàng loạt các phối màu của adidas Stan Smith được tung ra dành cho tín đồ mê sneakers" , author: "Nguyễn Xuân Tiền" , content: "Adidas Stan Smith đã không còn xa lạ với bất cứ ai yêu mến sneakers trên toàn cầu nói chung và tại Việt Nam nói riêng..." , created: formatDay() , img: "https://vnreport.vn/wp-content/uploads/2021/08/2-adidas-1024x768.jpg"
+    },
+      {
+        id: 3 , title: "Nike AIR FORCE 1 Love Women – Phối màu dành riêng cho một nửa thế giới của chúng ta" , author: "Trương Văn Nam" , content: "TeeLab lại tiếp tục tung ra một phối màu sử dụng tông màu trắng chủ đạo bằng chất liệu canvas kết hợp denim trên đôi sn..." , created: formatDay() , img: "https://cf.shopee.vn/file/abfbd102e71280e99a83575ad6a51626"
+    },
+]
+
+// Dữ liệu mẫu
+let productSale = [
+    {
+         id: "1", name: "Sữa pediaSure", quantity: 1, price: 2000,  img: "https://img.lazcdn.com/g/p/a2dcad6919e4f0eb7de7c817d2b6a267.jpg_400x400q80.jpg_.avif", description: "Gồm có 1 miếng gà được chế biến sẵn ăn liền không cần chế biến lại" , priceSale: 1500 , brand : "Abboutt"  , createdAt: formatDay()
+    },
+    {
+        id: "2", name: "Chuột bàn phím có dây Logitech", quantity: 1, price: 400 ,  img: "https://img.lazcdn.com/g/p/efab4fe753590b8b6070ab08100b4b94.jpg_400x400q80.jpg_.avif", description: "Gồm có 1 miếng gà được chế biến sẵn ăn liền không cần chế biến lại", priceSale: 200 ,  brand : "Logitech" , createdAt: formatDay()
+    },
+    {
+        id: "3", name: "Tai nghe Airpod 4", quantity: 1, price: 400 ,  img: "https://img.lazcdn.com/g/p/af6bcc0993400513ad3dab38c79fca6e.png_400x400q80.png_.avif", description: "Gồm có 1 miếng gà được chế biến sẵn ăn liền không cần chế biến lại", priceSale: 200 , brand : "Apple" , createdAt: formatDay()
+    },
+    {
+        id: "4", name: "Áo sơ mi thời trang cho nam", quantity: 1, price: 400 ,  img: "https://img.lazcdn.com/g/p/4988ec81180f7cf588661c4f2e0a9f2d.jpg_400x400q80.jpg_.avif", description: "Gồm có 1 miếng gà được chế biến sẵn ăn liền không cần chế biến lại", priceSale: 200, brand : "Fashion" , createdAt: formatDay()
+    },
+]
+
+let users = [
+    { email: "user1@example.com", password: "password123", id: "1" }, { email: "user2@example.com", password: "password456", id: "2" },
+];
+let products = [
+    {
+        id: "1", name: "Pin sạc dự phòng 30000mAh", quantity: 1, price: 2000 ,  img: "https://img.lazcdn.com/g/p/4c0d2aa0256029c99f2674e4a794b370.jpg_400x400q80.jpg_.avif", description: "Gồm có 1 miếng gà được chế biến sẵn ăn liền không cần chế biến lại" , createdAt: "01/08/2022" , categoriesId: 3
+    },
+    {
+         id: "2", name: "Kệ quần áo thời trang", quantity: 1, price: 5000 ,  img: "https://img.lazcdn.com/g/p/7567559cd01a79c848cc3f196ac85132.jpg_400x400q80.jpg_.avif", description: "Gồm có 2 miếng gà được chế biến sẵn ăn liền không cần chế biến lại" , createdAt: "05/06/2025" , categoriesId: 3
+    },
+     {
+         id: "3", name: "Nước hoa lưu hương thơm mát", quantity: 1, price: 400 ,  img: "https://img.lazcdn.com/g/p/d92a0bcb6deb64fcf8cd98049576a5d0.jpg_400x400q80.jpg_.avif", description: "Gồm có 2 miếng gà được chế biến sẵn ăn liền không cần chế biến lại" , createdAt: "06/06/2025" , categoriesId: 7
+    },
+     {
+         id: "4", name: "Vòng tay nữ lọng lẫy kiêu sa", quantity: 1, price: 6000 ,  img: "https://img.lazcdn.com/g/p/fdd739b7701fb3161990323dc343d300.png_400x400q80.png_.avif", description: "Gồm có 2 miếng gà được chế biến sẵn ăn liền không cần chế biến lại" , createdAt: "01/06/2025", categoriesId: 6
+    },
+     {
+         id: "5", name: "Thùng sữa Vinamilk 48 hộp", quantity: 1, price: 1500 ,  img: "https://img.lazcdn.com/g/p/6b85bd8958903f2d9c035d032175d23b.jpg_400x400q80.jpg_.avif", description: "Gồm có 2 miếng gà được chế biến sẵn ăn liền không cần chế biến lại" , createdAt: "07/06/2025" , categoriesId: 8
+    },
+     {
+         id: "6", name: "Giày thể thao nam thoải mái sang trọng", quantity: 1, price: 4000 ,  img: "https://img.lazcdn.com/g/p/95a203d1ff6f3b1b42e994ebc9e1f34d.jpg_400x400q80.jpg_.avif", description: "Gồm có 2 miếng gà được chế biến sẵn ăn liền không cần chế biến lại" , createdAt: formatDay() , categoriesId: 5
+    },
+];
+let tasks = [
+    { id: "1", name: "Thiết kế UI", productId: "1", status: "pending", assignedTo: null, createdAt: formatDay() },
+];
+let notes = [
+    { id: "1", name: "Ghi chú dự án", content: "Cần hoàn thành UI trước Q2", productId: "1", taskId: null, userEmail: "user1@example.com", createdAt: formatDay() },
+];
+// Middleware xác thực JWT
+const authenticateJWT = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ message: 'Không có token' });
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ message: 'Token không hợp lệ' });
+        req.user = user;
+        next();
+    });
+};
+// API Xác thực
+app.post('/api/signup', (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email và password là bắt buộc' });
+    }
+    if (users.find((u) => u.email === email)) {
+        return res.status(409).json({ message: 'Email đã tồn tại' });
+    }
+    const newUser = {
+        email,
+        password,
+        id: Date.now().toString(),
+    };
+    users.push(newUser);
+    res.status(201).json({ message: 'Đăng ký thành công' });
+});
+app.post('/api/login', (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email và password là bắt buộc' });
+    }
+    const user = users.find((u) => u.email === email && u.password === password);
+    if (!user) return res.status(401).json({ message: 'Thông tin đăng nhập sai' });
+    const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '30m' });
+    res.json({ accessToken: token });
+});
+// API Lấy danh sách users (dùng cho dropdown price/assignedTo)
+app.get('/api/users', authenticateJWT, (req, res) => {
+    const userList = users.map(({ id, email }) => ({ id, email }));
+    res.json(userList);
+});
+
+// API categories
+app.get('/api/categories', authenticateJWT, (req, res) => res.json(categories));
+
+// API News
+app.get('/api/news', authenticateJWT, (req, res) => res.json(news));
+
+// API Dự án
+app.get('/api/products', authenticateJWT, (req, res) => res.json(products));
+app.get('/api/products/:id', authenticateJWT, (req, res) => {
+    const product = products.find((p) => p.id === req.params.id);
+    if (product) res.json(product);
+    else res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+});
+app.post('/api/products', authenticateJWT, (req, res) => {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ message: 'Tên sản phẩm là bắt buộc' });
+    const newproduct = {
+        id: Date.now().toString(),
+        name,
+        quantity: 1,
+        price: 200,
+        createdAt: formatDay(),
+    };
+    products.push(newproduct);
+    res.status(201).json(newproduct);
+});
+app.patch('/api/products/:id', authenticateJWT, (req, res) => {
+    const id = req.params.id;
+    const productIndex = products.findIndex((product) => product.id === id);
+    if (productIndex > -1) {
+        products[productIndex] = { ...products[productIndex], ...req.body };
+        res.json(products[productIndex]);
+    } else {
+        res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+    }
+});
+app.delete('/api/products/:id', authenticateJWT, (req, res) => {
+    const id = req.params.id;
+    // if (tasks.some((task) => task.productId === id)) {
+    //     return res.status(400).json({ message: 'Không thể xóa dự án có nhiệm vụ' });
+    // }
+    products = products.filter((product) => product.id !== id);
+    res.status(204).send();
+});
+
+// API Sản phẩm khuyến mãi
+
+app.get('/api/productsale', authenticateJWT, (req, res) => res.json(productSale));
+app.get('/api/productsale/:id', authenticateJWT, (req, res) => {
+    const productSale = productSale.find((p) => p.id === req.params.id);
+    if (productSale) res.json(productSale);
+    else res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+});
+
+
+
+// API Nhiệm vụ
+app.get('/api/tasks', authenticateJWT, (req, res) => {
+    const productId = req.query.productId;
+    const filteredTasks = productId ? tasks.filter((t) => t.productId === productId) : tasks;
+    res.json(filteredTasks);
+});
+app.post('/api/tasks', authenticateJWT, (req, res) => {
+    const { name, productId } = req.body;
+    if (!name || !productId) {
+        return res.status(400).json({ message: 'Tiêu đề và productId là bắt buộc' });
+    }
+    if (!products.find((p) => p.id === productId)) {
+        return res.status(404).json({ message: 'Không tìm thấy dự án' });
+    }
+    const newTask = {
+        id: Date.now().toString(),
+        name,
+        productId,
+        status: 'pending',
+        assignedTo: null,
+        createdAt: formatDay(),
+    };
+    tasks.push(newTask);
+    res.status(201).json(newTask);
+});
+app.patch('/api/tasks/:id', authenticateJWT, (req, res) => {
+    const id = req.params.id;
+    const taskIndex = tasks.findIndex((task) => task.id === id);
+    if (taskIndex > -1) {
+        tasks[taskIndex] = { ...tasks[taskIndex], ...req.body };
+        res.json(tasks[taskIndex]);
+    } else {
+        res.status(404).json({ message: 'Không tìm thấy nhiệm vụ' });
+    }
+});
+app.delete('/api/tasks/:id', authenticateJWT, (req, res) => {
+    tasks = tasks.filter((task) => task.id !== req.params.id);
+    res.status(204).send();
+});
+// API Ghi chú
+app.get('/api/notes', authenticateJWT, (req, res) => {
+    const userNotes = notes.filter((note) => note.userEmail === req.user.email);
+    res.json(userNotes);
+});
+app.post('/api/notes', authenticateJWT, (req, res) => {
+    const { name, content, productId, taskId } = req.body;
+    if (!name || !content) {
+        return res.status(400).json({ message: 'Tiêu đề và nội dung là bắt buộc' });
+    }
+    if (productId && !products.find((p) => p.id === productId)) {
+        return res.status(404).json({ message: 'Không tìm thấy dự án' });
+    }
+    if (taskId && !tasks.find((t) => t.id === taskId)) {
+        return res.status(404).json({ message: 'Không tìm thấy nhiệm vụ' });
+    }
+    const newNote = {
+        id: Date.now().toString(),
+        name,
+        content,
+        productId: productId || null,
+        taskId: taskId || null,
+        userEmail: req.user.email,
+        createdAt: formatDay(),
+    };
+    notes.push(newNote);
+    res.status(201).json(newNote);
+});
+app.patch('/api/notes/:id', authenticateJWT, (req, res) => {
+    const { id } = req.params;
+    const { name, content } = req.body;
+    const noteIndex = notes.findIndex(
+        (note) => note.id === id && note.userEmail === req.user.email
+    );
+    if (noteIndex === -1) return res.status(404).json({ message: 'Không tìm thấy ghi chú' });
+    notes[noteIndex] = { ...notes[noteIndex], name, content };
+    res.json(notes[noteIndex]);
+});
+app.delete('/api/notes/:id', authenticateJWT, (req, res) => {
+    const { id } = req.params;
+    const noteIndex = notes.findIndex(
+        (note) => note.id === id && note.userEmail === req.user.email
+    );
+    if (noteIndex === -1) return res.status(404).json({ message: 'Không tìm thấy ghi chú' });
+    notes.splice(noteIndex, 1);
+    res.status(204).send();
+});
+app.listen(port, () => console.log(`Server chạy tại http://localhost:${port}`));
