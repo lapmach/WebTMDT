@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
 import { fetchProduct } from "../../redux/Slices/productsSlice";
 import { login } from "../../redux/Slices/authSlice";
+import { setCurrUser } from "../../redux/Slices/userSlice";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ const Login = () => {
 
         const data = await dispatch(login({ email, password }));
         if (login.fulfilled.match(data)) {
+            dispatch(setCurrUser(email));
             await dispatch(fetchProduct())
             navigate("/home")
         }
@@ -26,7 +28,7 @@ const Login = () => {
     }
     return (
         <div className="container-fluid">
-            {error && <p style={{color: "red"}}>{error}</p>}
+            
             <div className="container justify-content-center dangNhap">
                 <div className="col-md-4 phanDangNhap">
                     <h3>Đăng Nhập</h3>
@@ -50,6 +52,7 @@ const Login = () => {
                                 <input className="form-check-input" type="checkbox" name="remember" /> Nhớ mật khẩu
                             </label>
                         </div>
+                        {error && <p className="text-center" style={{color: "red"}}>{error}</p>}
                         <button type="submit" className="btn btn-primary">Đăng Nhập</button>
                         {/* <h4 style={{ marginTop: '20px', fontSize: "1rem" }}>Hoặc tiếp tục với</h4>
                         <button className="nutDNFB">

@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 
 const CommonPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     console.log(location);
     
     useEffect(() => {
         if (location.pathname === "/") {
-            <Navigate to="/home" replace></Navigate>
+            // return 
+            navigate("/home");
         }
     }, [location.pathname])
     return (

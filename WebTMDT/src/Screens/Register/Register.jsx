@@ -28,7 +28,7 @@ const Register = () => {
     }
     return (
         <div className="container-fluid">
-            {error && <p style={{ color: "red" }}>{error}</p>}
+           
             <div className="container justify-content-center dangNhap">
                 <div className="col-md-4 phanDangNhap">
                     <h3>Đăng Ký</h3>
@@ -47,6 +47,7 @@ const Register = () => {
                             <div className="valid-feedback" />
                             <div className="invalid-feedback">Vui lòng nhập mật khẩu</div>
                         </div>
+                         {error && <p className='text-center' style={{ color: "red" }}>{error}</p>}
                         <button type="submit" className="btn btn-primary">Đăng Ký</button>
                         {/* <h4 style={{ marginTop: '20px', fontSize: "1rem" }}>Hoặc tiếp tục với</h4>
                         <button className="nutDNFB">

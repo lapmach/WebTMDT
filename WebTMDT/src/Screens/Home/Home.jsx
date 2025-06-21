@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductSale } from '../../redux/Slices/productSaleSlice';
 import { fetchNews } from '../../redux/Slices/newsSlice';
 import { fetchCategories } from './../../redux/Slices/categoriesSlice';
+import { Link } from 'react-router-dom';
+import { fetchProduct } from '../../redux/Slices/productsSlice';
 
 const Home = () => {
 
@@ -14,6 +16,9 @@ const Home = () => {
     const news = useSelector((state) => state.news.news);
     const categories = useSelector((state) => state.categories.categories);
     const dispatch = useDispatch();
+    const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN').format(price);
+    };
     console.log(categories);
 
     const parseDDMMYYYY = (dateString) => {
@@ -37,6 +42,7 @@ const Home = () => {
 
     useEffect(() => {
         dispatch(fetchProductSale());
+        dispatch(fetchProduct())
         dispatch(fetchNews());
         dispatch(fetchCategories())
     }, [dispatch])
@@ -106,15 +112,17 @@ const Home = () => {
                     <div className='row'>
                         {categories.map(item => (
                             <div key={item.id} className='col-lg-1 categories'>
-                                <div className="img">
-                                    <img src={item.img} alt="" />
-                                </div>
-                                <div className="nameCategories">
-                                    <p>{item.name}</p>
-                                </div>
+                                <Link to={`/categories/${item.id}`}>
+                                    <div className="img">
+                                        <img src={item.img} alt="" />
+                                    </div>
+                                    <div className="nameCategories">
+                                        <p>{item.name}</p>
+                                    </div>
+                                </Link>
                             </div>
                         ))}
-                        
+
                     </div>
 
                 </section>
@@ -136,7 +144,7 @@ const Home = () => {
                                     <img src={item.img} alt="" />
                                     <h5>{item.name}</h5>
                                     <h6>NIKE</h6>
-                                    <p>{item.price}</p>
+                                    <p>{formatPrice(item.price)}₫</p>
                                 </div>
                             </div>
                         ))}
@@ -167,8 +175,8 @@ const Home = () => {
                                     <h5>{item.name}</h5>
                                     <h6>{item.brand}</h6>
                                     <div className="d-flex justify-content-between">
-                                        <h4 className="text-danger mx-2">{item.priceSale}₫</h4>
-                                        <p className="text-black-50 text-decoration-line-through">${item.price}₫</p>
+                                        <h4 className="text-danger">{formatPrice(item.priceSale)}₫</h4>
+                                        <p className="text-black-50 text-decoration-line-through">{formatPrice(item.price)}₫</p>
 
                                     </div>
                                 </div>
