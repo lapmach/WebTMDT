@@ -208,13 +208,24 @@ app.post('/api/login', (req, res) => {
     const user = users.find((u) => u.email === email && u.password === password);
     if (!user) return res.status(401).json({ message: 'Thông tin đăng nhập sai' });
     const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '30m' });
-    res.json({ accessToken: token });
+    res.json({ accessToken: token , user: {id: user.id , email: user.email} });
 });
 // API Lấy danh sách users (dùng cho dropdown price/assignedTo)
 app.get('/api/users', authenticateJWT, (req, res) => {
     const userList = users.map(({ id, email }) => ({ id, email }));
     res.json(userList);
 });
+
+app.get("/api/me", authenticateJWT, (req, res) => {
+  const user = users.find((u) => u.email === req.user.email);
+  if (!user) {
+    return res.status(404).json({ message: "Không tìm thấy User" });
+  }
+ 
+  const { password, ...userWithoutPassword } = user;
+  res.json(userWithoutPassword);
+});
+ 
 
 // API categories
 app.get('/api/categories', authenticateJWT, (req, res) => {
@@ -283,16 +294,17 @@ app.get('/api/productsale/:id', authenticateJWT, (req, res) => {
 
 // API Cart
 app.get('/api/cart', authenticateJWT, (req, res) => {
-    const { userID } = req.body;
+    const  userID  = req.user.id;
     const user = users.find((u) => Number(u.id) === Number(userID));
     if (user?.cart) res.json(user?.cart);
     else res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
 });
 
 app.post('/api/cart', authenticateJWT, (req, res) => {
-    const { userID, idProduct , quantity} = req.body;
+    const  userID  = req.user.id;
+    const { idProduct , quantity} = req.body;
     users.forEach(user => {
-        if (Number(item.id) === Number(userID)) {
+        if (Number(user.id) === Number(userID)) {
             let checkInCart = user.cart.some(item => Number(item.id) === Number(idProduct));
             if (!checkInCart) {
                 let product = products.find(value => Number(value.id) === Number(idProduct));
@@ -307,7 +319,7 @@ app.post('/api/cart', authenticateJWT, (req, res) => {
             }
         }
     });
-    res.status(201).json({ message: 'add success' });
+    res.status(201).json( {message: 'add success' });
 });
 // app.patch('/api/products/:id', authenticateJWT, (req, res) => {
 //     const id = req.params.id;

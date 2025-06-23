@@ -3,14 +3,17 @@ import axios from "axios";
 import { axiosClient } from "../../api/axiosClient";
 
 
-export const fetchCart = createAsyncThunk("cart/fetchProduct", async ({userID}) => {
-    const response = await axiosClient.get("/api/cart" , {userID});
+export const fetchCart = createAsyncThunk("cart/fetchProduct", async () => {
+    const response = await axiosClient.get("/api/cart");
     return response.data;
 })
 
-export const addCart = createAsyncThunk("cart/addCart", async ({ userID , idProduct , quantity }) => {
-    const reponse = await axiosClient.post("/api/cart", { userID , idProduct , quantity });
+export const addCart = createAsyncThunk("cart/addCart", async ({idProduct , quantity }) => {
+    const reponse = await axiosClient.post("/api/cart", { idProduct , quantity });
+    console.log("a",reponse.data);
     return reponse.data;
+    
+    
 })
 
 
@@ -47,7 +50,7 @@ const cartSlice = createSlice({
             })
             .addCase(addCart.fulfilled, (state, action) => {
                 state.loading = false;
-                state.cart.push(action.payload);
+                state.cart.unshift(action.payload);
             })
             .addCase(addCart.rejected, (state, action) => {
                 state.loading = false;

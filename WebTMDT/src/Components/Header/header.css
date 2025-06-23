@@ -198,7 +198,7 @@
 
 /* Phần tìm kiếm */
 .PhanTimKiem{
-    height: 90px;
+    height: 85px;
     display: flex;
     align-items: center;
     margin: 0 65px;
@@ -265,13 +265,14 @@
     line-height: 25px;
     margin: 0px 0px 10px 10px;
     display: flex;
+    z-index: 100;
 }
 .lichSuTimKiem .noiDungTimKiem img{
     height: 50px;
     margin-right: 20px;
 }
 
-.lichSuTimKiem a :hover{
+.lichSuTimKiem .noiDungTimKiem  :hover{
     background-color: rgba(202, 187, 187, 0.291);
     cursor: pointer;
 }
@@ -488,4 +489,11 @@
 
 .canhGiua{
     text-align: center;
+}
+
+.logoutBtn button{
+    font-size: 15px;
+    padding: 1px 12px;
+    border-radius: 5px;
+    background-color: rgb(133,81,228);
 }

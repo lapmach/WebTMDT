@@ -36,7 +36,9 @@ export const login = createAsyncThunk(
                 password,
             });
             console.log("response", response);
-            const { accessToken } = response.data;
+            const { accessToken , user } = response.data;
+            console.log("user" , user);
+            
             console.log("accesstoken_", accessToken);
 
 
@@ -58,6 +60,7 @@ export const login = createAsyncThunk(
 
 export const logout = createAsyncThunk("auth/logout" , async () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("currentUser");
 })
 
 const authSlices = createSlice({

@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, replace } from 'react-router-dom';
+import { Link, replace, useNavigate } from 'react-router-dom';
 import "./header.css"
 import { fetchUsers, setCurrUser } from '../../redux/Slices/userSlice';
-import { fetchCart } from '../../redux/Slices/cartSLice';
 import { fetchProduct } from '../../redux/Slices/productsSlice';
+import { fetchCart } from '../../redux/Slices/cartSLice';
+import LogoutButton from '../LogoutButton/LogoutButton';
+
 const Header = () => {
     const categories = useSelector((state) => state.categories.categories);
     const accessToken = localStorage.getItem("accessToken");
-    console.log("access",accessToken);
-    
+    const currentUser = localStorage.getItem("currentUser");
+    const navigate = useNavigate();
+    const handleToProduct = (id) => {
+        navigate(`/products/${id}`);
+        console.log("id----", id);
+
+    }
+    console.log("access", accessToken);
+
     const users = useSelector((state) => state.users.users);
-    const currentUser = useSelector((state) => state.users.currentUser);
     console.log("cur", currentUser);
-    
+
     const user = users.find(u => u.email == currentUser);
     const cart = useSelector((state) => state.cart.cart);
     const products = useSelector((state) => state.products.products)
@@ -23,7 +31,6 @@ const Header = () => {
 
     useEffect(() => {
         dispatch(fetchUsers());
-        dispatch(setCurrUser(currentUser));
         dispatch(fetchProduct());
     }, [dispatch]);
 
@@ -31,10 +38,10 @@ const Header = () => {
 
     useEffect(() => {
         if (user?.id) {
-            dispatch(fetchCart({ userID: user.id }));
+            dispatch(fetchCart());
         }
     }, [dispatch, user]);
-    
+
 
     const [searchItem, setSearchItem] = useState("");
 
@@ -44,6 +51,7 @@ const Header = () => {
     );
 
     return (
+
 
         // <header>
         //     <div className="container p-0 headerCha">
@@ -208,6 +216,9 @@ const Header = () => {
                                     <li className="navbar-list__item">
                                         Xin Chào {currentUser}
                                     </li>
+                                    <li className="navbar-list__item logoutBtn" style={{borderLeft: "none"}}>
+                                        <LogoutButton/>
+                                    </li>
                                 </>
                             }
                         </ul>
@@ -227,13 +238,13 @@ const Header = () => {
                                     <h4>Kết quả tìm kiếm</h4>
                                 </div>
 
-                                    {filteredProducts.map(item => (
-                                    <Link style={{textDecoration: "none"}} to={`/products/${item.id}`}>
-                                        <div key={item.id} className="noiDungTimKiem">
-                                            <img src={item.img} alt="" />
-                                            <p>{item.name}</p>
-                                        </div>
-                                    </Link>
+                                {filteredProducts.map(item => (
+                                    // <Link style={{textDecoration: "none"}} to={`/products/${item.id}`}>
+                                    <div onClick={() => handleToProduct(item.id)} key={item.id} className="noiDungTimKiem">
+                                        <img src={item.img} alt="" />
+                                        <p>{item.name}</p>
+                                    </div>
+                                    // </Link>
                                 ))}
 
                                 {/* <div className="noiDungTimKiem">
@@ -253,17 +264,19 @@ const Header = () => {
                                 <div className="headerOf_Notify2">
                                     <h3>Sản phẩm mới thêm</h3>
                                 </div>
-                                <div className="sanPhamThongBao2">
-                                    <div className="hinh2">
-                                        <img src="assets/img/GaRan3mieng.jpg" alt="" />
+                                {cart?.map(item => (
+                                    <div key={item.id} className="sanPhamThongBao2">
+                                        <div className="hinh2">
+                                            <img src={item.img} alt="" />
+                                        </div>
+                                        <div className="text2">
+                                            <h4 className="tieuDe2">{item.name}</h4>
+                                        </div>
+                                        <div className="gia">
+                                            <p>{item.price} VNĐ</p>
+                                        </div>
                                     </div>
-                                    <div className="text2">
-                                        <h4 className="tieuDe2">Combo gà rán 3 miếng</h4>
-                                    </div>
-                                    <div className="gia">
-                                        <p>135.000 VNĐ</p>
-                                    </div>
-                                </div>
+                                ))}
                                 {/* <div className="sanPhamThongBao2">
                                     <div className="hinh2">
                                         <img src="assets/img/KhoaiTayChien.jpg" alt="" />

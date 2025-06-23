@@ -19,8 +19,10 @@ const Login = () => {
         console.log("pass", password);
 
         const data = await dispatch(login({ email, password }));
+        console.log(data);
+        
         if (login.fulfilled.match(data)) {
-            dispatch(setCurrUser(email));
+            localStorage.setItem("currentUser", email);
             await dispatch(fetchProduct())
             navigate("/home")
         }

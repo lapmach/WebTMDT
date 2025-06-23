@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import "./ProductDetail.css"
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProduct, fetchProductById } from '../../redux/Slices/productsSlice';
-import { Link, useParams } from 'react-router-dom';
-import { addCart } from '../../redux/Slices/cartSLice';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { fetchUsers } from '../../redux/Slices/userSlice';
+import { addCart, fetchCart } from '../../redux/Slices/cartSLice';
 
 const ProductDetail = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { id } = useParams();
     const [count, setCount] = useState(1);
 
@@ -15,18 +16,39 @@ const ProductDetail = () => {
         dispatch(fetchProductById(id));
         dispatch(fetchProduct());
         dispatch(fetchUsers());
+        dispatch(fetchCart());
     }, [dispatch, id]);
 
     const product = useSelector((state) => state.products.currentProduct)
     const products = useSelector((state) => state.products.products)
+    const productSuggest = products.filter(item => item.id !== id);
     const users = useSelector((state) => state.users.users);
     const currentUser = useSelector((state) => state.users.currentUser);
+    const cart = useSelector((state) => state.cart.cart);
     const user = users.find(u => u.email == currentUser);
 
-    const [selectedImage, setSelectedImage] = useState(product?.img);
+    // const [selectedImage, setSelectedImage] = useState(product?.img);
+     
+    const [selectedImage, setSelectedImage] = useState(null);
+ 
+    useEffect(() => {
+        if(product?.img) {
+            setSelectedImage(product.img)
+        }
+    }, [product])
+ 
+    console.log("cart", cart);
+    console.log("Pro", product);
+    console.log("Pro nhieu" , products);
+    
+    
+    
 
     const handleAddToCart = () => {
-        // dispatch(addCart({userID : user.id , idProduct : product.id , quantity: count}))
+       if(product){
+         dispatch(addCart({idProduct : id , quantity: count}))
+       }
+       navigate("/payment");
     }
 
 
@@ -36,7 +58,7 @@ const ProductDetail = () => {
         return (
             <div>
                 This product not found
-                <Link to={"/home"}>back</Link>
+                <Link to={"/home"}> back home</Link>
             </div>
 
         )
@@ -51,7 +73,7 @@ const ProductDetail = () => {
                             <img src={selectedImage} className="img-thumbnail" alt="" />
                         </div>
                         <div className="thumbnail-list">
-                            {product.listImg.map((img, idx) => (
+                            {(product.listImg || []).map((img, idx) => (
                                 <div
                                     key={idx}
                                     className={`thumbnail ${selectedImage === img ? 'active' : ''}`}
@@ -76,9 +98,9 @@ const ProductDetail = () => {
                                 <button className="btnTangGiamSL" onClick={() => { setCount(count + 1) }}>+</button>
                             </div>
                             <div className="nut" style={{ paddingTop: '10px' }}>
-                                <a href="ThanhToan.html">
-                                    <button onClick={handleAddToCart}>ĐẶT HÀNG NGAY</button>
-                                </a>
+                                
+                                    <button onClick={handleAddToCart}>ĐẶT HÀNG</button>
+                            
                             </div>
                             <div className="chiaSe">
                                 <span className="tieuDe">Chia Sẻ: </span>
@@ -111,8 +133,8 @@ const ProductDetail = () => {
                                 <h3>CÓ THỂ BẠN THÍCH</h3>
                             </div>
                             <div className="srollMenuSuggest">
-                                {products.map(item => (
-                                    <div className="sanPhamGoiY">
+                                {productSuggest.map(item => (
+                                    <div key={item.id} className="sanPhamGoiY">
                                         <div className="hinhAnh">
                                             <img src={item.img} alt="" />
                                         </div>
