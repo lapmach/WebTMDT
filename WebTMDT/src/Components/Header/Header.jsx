@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, replace, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "./header.css"
-import { fetchUsers, setCurrUser } from '../../redux/Slices/userSlice';
+import { fetchUserNow} from '../../redux/Slices/userSlice';
 import { fetchProduct } from '../../redux/Slices/productsSlice';
 import { fetchCart } from '../../redux/Slices/cartSLice';
 import LogoutButton from '../LogoutButton/LogoutButton';
@@ -19,28 +19,31 @@ const Header = () => {
     }
     console.log("access", accessToken);
 
-    const users = useSelector((state) => state.users.users);
-    console.log("cur", currentUser);
-
-    const user = users.find(u => u.email == currentUser);
-    const cart = useSelector((state) => state.cart.cart);
+    const user = useSelector((state) => state.user.user);
+    const carts = useSelector((state) => state.cart.cart);
     const products = useSelector((state) => state.products.products)
-    console.log("pro", products);
+    const [cart , setCart] = useState(null);
+    console.log("cart", carts);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchUsers());
+        dispatch(fetchUserNow());
         dispatch(fetchProduct());
+        dispatch(fetchCart());
     }, [dispatch]);
+
+    useEffect(()=>{
+        if(carts){
+            setCart(carts);
+        }
+    },[carts])
 
 
 
     useEffect(() => {
-        if (user?.id) {
-            dispatch(fetchCart());
-        }
-    }, [dispatch, user]);
+            dispatch(fetchCart())
+    }, [dispatch]);
 
 
     const [searchItem, setSearchItem] = useState("");
@@ -239,12 +242,12 @@ const Header = () => {
                                 </div>
 
                                 {filteredProducts.map(item => (
-                                    // <Link style={{textDecoration: "none"}} to={`/products/${item.id}`}>
+                                    <Link style={{textDecoration: "none"}} to={`/products/${item.id}`}>
                                     <div onClick={() => handleToProduct(item.id)} key={item.id} className="noiDungTimKiem">
                                         <img src={item.img} alt="" />
                                         <p>{item.name}</p>
                                     </div>
-                                    // </Link>
+                                    </Link>
                                 ))}
 
                                 {/* <div className="noiDungTimKiem">
@@ -259,7 +262,7 @@ const Header = () => {
                     </div>
                     <div className="gioHang">
                         <i className="fa-solid fa-cart-shopping">
-                            <span className="thongBaoSoLuong">4</span>
+                            <span className="thongBaoSoLuong">{cart?.length}</span>
                             <div className="ThongBaoGioHang">
                                 <div className="headerOf_Notify2">
                                     <h3>Sản phẩm mới thêm</h3>
@@ -311,7 +314,7 @@ const Header = () => {
                                     </div>
                                 </div> */}
                                 <div className="buttonXemALL2">
-                                    <a href="ThanhToan.html" className="btnXemHet2">Xem Giỏ Hàng</a>
+                                    <Link to={"/payment"} className="btnXemHet2">Xem Giỏ Hàng</Link>
                                 </div>
                             </div>
                         </i>

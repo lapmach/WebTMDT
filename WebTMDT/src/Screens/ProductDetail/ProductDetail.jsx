@@ -3,7 +3,6 @@ import "./ProductDetail.css"
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProduct, fetchProductById } from '../../redux/Slices/productsSlice';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { fetchUsers } from '../../redux/Slices/userSlice';
 import { addCart, fetchCart } from '../../redux/Slices/cartSLice';
 
 const ProductDetail = () => {
@@ -15,17 +14,15 @@ const ProductDetail = () => {
     useEffect(() => {
         dispatch(fetchProductById(id));
         dispatch(fetchProduct());
-        dispatch(fetchUsers());
         dispatch(fetchCart());
     }, [dispatch, id]);
 
     const product = useSelector((state) => state.products.currentProduct)
     const products = useSelector((state) => state.products.products)
     const productSuggest = products.filter(item => item.id !== id);
-    const users = useSelector((state) => state.users.users);
-    const currentUser = useSelector((state) => state.users.currentUser);
+    // const currentUser = useSelector((state) => state.users.currentUser);
     const cart = useSelector((state) => state.cart.cart);
-    const user = users.find(u => u.email == currentUser);
+
 
     // const [selectedImage, setSelectedImage] = useState(product?.img);
      
@@ -47,6 +44,7 @@ const ProductDetail = () => {
     const handleAddToCart = () => {
        if(product){
          dispatch(addCart({idProduct : id , quantity: count}))
+         .then(() => dispatch(fetchCart()));
        }
        navigate("/payment");
     }
@@ -141,7 +139,7 @@ const ProductDetail = () => {
                                         <div className="moTaSP">
                                             <h4>{item.name}</h4>
                                             <h5>{item.price}VNĐ</h5>
-                                            <button>Đặt Món</button>
+                                            <button onClick={()=> {navigate(`/products/${item.id}`)}}>Xem ngay</button>
                                         </div>
                                     </div>
                                 ))}

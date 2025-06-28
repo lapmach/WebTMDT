@@ -1,6 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "./Payment.css"
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteCart } from '../../redux/Slices/userSlice';
+import { fetchCart } from '../../redux/Slices/cartSLice';
+import { Link } from 'react-router-dom';
+
 const Payment = () => {
+    const dispatch = useDispatch();
+    const SHIPPING_FEE = 5000;
+    const [count , setCount ] = useState(1);
+
+    useEffect(() => {
+        dispatch(fetchCart());
+    }, [dispatch]);
+
+    const cart = useSelector((state) => state.cart.cart);
+    console.log("cart", cart);
+    
+    let provisionalAmount = 0 ;
+   if(cart.length > 0){
+        provisionalAmount = cart.reduce((prev , cur) => prev.price * prev.quantity + cur.price * cur.quantity);
+   }
+   console.log("sum" , provisionalAmount);
+   
+    
+    
+    const handleDeleteCart = (id) => {
+        dispatch(deleteCart(id));
+    }
     return (
         <div>
             <div>
@@ -63,39 +90,43 @@ const Payment = () => {
                                             </tr>
                                         </thead>
                                         <tbody id="parentThanhToan">
-                                            <tr className="chiTietThanhToan">
-                                                <td><img src="./img/Ga1Mieng.jpg" alt=""/></td>
-                                                <td><div>
-                                                    <h6 className="mrLeft">Ga ran 1 mieng</h6>
-                                                    <div className="d-flex">
-                                                        <button className="btnTangGiamSL">+</button>
-                                                        <input type="text" style={{width: '50px', border: '1px solid #00000024', textAlign: 'center', height: '22px'}} role="spinbutton" />
-                                                            <button className="btnTangGiamSL">-</button>
-                                                    </div>
-                                                </div></td>
-                                                <td><span>50$</span></td>
-                                                <td> <i className="fa-solid fa-circle-xmark"></i></td>
-                                            </tr>
-                                            
-                                           
+                                            {
+                                                cart.map(item => (
+                                                    <tr key={item.id} className="chiTietThanhToan">
+                                                        <td><img src={item.img} alt="" /></td>
+                                                        <td><div>
+                                                            <span className="mrLeft small-heading">{item.name}</span>
+                                                            <div className="d-flex mt-2">
+                                                                <button onClick={() => { (count <= 1) ? setCount((count) => count = 1) : setCount((count) => count - 1) }} className="btnTangGiamSL">-</button>
+                                                                <input type="text" onChange={(e) => { setCount(Number(e.target.value)) }} value={item.quantity} style={{ width: '50px', border: '1px solid #00000024', textAlign: 'center', height: '22px' }} role="spinbutton" />
+                                                                <button onClick={() => {setCount(count+1)}} className="btnTangGiamSL">+</button>
+                                                            </div>
+                                                        </div></td>
+                                                        <td><span>{item.price}VNĐ</span></td>
+                                                        <td> <i onClick={() => handleDeleteCart(item.id)} className="fa-solid fa-circle-xmark"></i></td>
+                                                    </tr>
+                                                ))
+                                            }
+
+
                                         </tbody>
                                     </table>
                                     <hr />
                                     <div className="chiTietThanhToan1" style={{ marginLeft: '20px' }}>
                                         <p>Tạm tính</p>
-                                        <p id="giaTamTinh">90$</p>
+                                        <p id="giaTamTinh">{provisionalAmount} VNĐ</p>
                                     </div>
                                     <div className="chiTietThanhToan1" style={{ marginLeft: '20px' }}>
                                         <p>Phí vận chuyển</p>
-                                        <p>5$</p>
+                                        <p>{SHIPPING_FEE} VNĐ</p>
                                     </div>
                                     <hr />
                                     <div className="chiTietThanhToan1" style={{ marginLeft: '20px' }}>
                                         <h4>Tổng cộng:</h4>
-                                        <p id="giaTong">95$</p>
+                                        <p id="giaTong">{provisionalAmount + SHIPPING_FEE} VNĐ</p>
                                     </div>
                                     <div className="chiTietThanhToan1">
-                                        <a href="index.html" style={{ cursor: 'pointer' }} className="mt-3 mx-3 anchor"><i className="fa-solid fa-chevron-left" />Quay lại trang chủ</a>
+                                        <Link to={"/home"} style={{ cursor: 'pointer' }} className="mt-3 mx-3 anchor"><i className="fa-solid fa-chevron-left" />Quay lại trang chủ</Link>
                                         <button id="btnDatHang" className="btn btn-primary mt-3">ĐẶT HÀNG</button>
                                     </div>
                                 </div>

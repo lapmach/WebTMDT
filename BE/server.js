@@ -86,7 +86,32 @@ let productSale = [
 ]
 
 let users = [
-    { email: "user1@example.com", password: "password123", id: "1", cart: [], bill: [] },
+    {
+        email: "nana@example.com", password: "123", id: "1", cart: [{
+            id: "1", name: "Pin sạc dự phòng 30000mAh", price: 2000, img: "https://img.lazcdn.com/g/p/4c0d2aa0256029c99f2674e4a794b370.jpg_400x400q80.jpg_.avif", description: "Gồm có 1 miếng gà được chế biến sẵn ăn liền không cần chế biến lại", createdAt: "01/08/2022", categoriesId: "3", brand: "Logitech"
+            , listImg: [
+                "https://img.lazcdn.com/g/p/03e761230d42b5e07da524ed704c46e6.jpg_720x720q80.jpg_.webp",
+                "https://img.lazcdn.com/g/p/047f364c149c86c7ae7cd81fd2d82ccb.jpg_120x120q80.jpg_.webp",
+                "https://img.lazcdn.com/g/p/97692f19429846ccdc3b77d8f79b717e.jpg_120x120q80.jpg_.webp",
+                "https://img.lazcdn.com/g/p/6011e69b9b75d2062ae0457d56575566.jpg_120x120q80.jpg_.webp",
+            ]
+            ,quantity: 2
+        },
+        {
+        id: "3", name: "Nước hoa lưu hương thơm mát", price: 400, img: "https://img.lazcdn.com/g/p/d92a0bcb6deb64fcf8cd98049576a5d0.jpg_400x400q80.jpg_.avif", description: "Gồm có 2 miếng gà được chế biến sẵn ăn liền không cần chế biến lại", createdAt: "06/06/2025", categoriesId: "7", brand: "Channel"
+        ,
+        quantity: 1
+        ,
+         listImg: [
+            "https://img.lazcdn.com/g/p/03e761230d42b5e07da524ed704c46e6.jpg_720x720q80.jpg_.webp",
+            "https://img.lazcdn.com/g/p/047f364c149c86c7ae7cd81fd2d82ccb.jpg_120x120q80.jpg_.webp",
+            "https://img.lazcdn.com/g/p/97692f19429846ccdc3b77d8f79b717e.jpg_120x120q80.jpg_.webp",
+            "https://img.lazcdn.com/g/p/6011e69b9b75d2062ae0457d56575566.jpg_120x120q80.jpg_.webp",
+        ]
+    },
+    
+    ], bill: []
+    },
     { email: "user2@example.com", password: "password456", id: "2", cart: [], bill: [] },
 ];
 let products = [
@@ -207,8 +232,8 @@ app.post('/api/login', (req, res) => {
     }
     const user = users.find((u) => u.email === email && u.password === password);
     if (!user) return res.status(401).json({ message: 'Thông tin đăng nhập sai' });
-    const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '30m' });
-    res.json({ accessToken: token , user: {id: user.id , email: user.email} });
+    const token = jwt.sign({ email: user.email , id: user.id }, JWT_SECRET, { expiresIn: '30m' });
+    res.json({ accessToken: token, user: { id: user.id, email: user.email } });
 });
 // API Lấy danh sách users (dùng cho dropdown price/assignedTo)
 app.get('/api/users', authenticateJWT, (req, res) => {
@@ -217,15 +242,17 @@ app.get('/api/users', authenticateJWT, (req, res) => {
 });
 
 app.get("/api/me", authenticateJWT, (req, res) => {
-  const user = users.find((u) => u.email === req.user.email);
-  if (!user) {
-    return res.status(404).json({ message: "Không tìm thấy User" });
-  }
- 
-  const { password, ...userWithoutPassword } = user;
-  res.json(userWithoutPassword);
+    const user = users.find((u) => u.email === req.user.email);
+    if (!user) {
+        return res.status(404).json({ message: "Không tìm thấy User" });
+    }
+
+    const { password, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
 });
- 
+
+
+
 
 // API categories
 app.get('/api/categories', authenticateJWT, (req, res) => {
@@ -294,32 +321,81 @@ app.get('/api/productsale/:id', authenticateJWT, (req, res) => {
 
 // API Cart
 app.get('/api/cart', authenticateJWT, (req, res) => {
-    const  userID  = req.user.id;
-    const user = users.find((u) => Number(u.id) === Number(userID));
-    if (user?.cart) res.json(user?.cart);
-    else res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+    const user = users.find((u) => u.email === req.user.email);
+    if (!user) {
+        return res.status(404).json({ message: "Không tìm thấy cart" });
+    }
+
+    const { password, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword.cart);
 });
 
-app.post('/api/cart', authenticateJWT, (req, res) => {
-    const  userID  = req.user.id;
-    const { idProduct , quantity} = req.body;
-    users.forEach(user => {
-        if (Number(user.id) === Number(userID)) {
-            let checkInCart = user.cart.some(item => Number(item.id) === Number(idProduct));
-            if (!checkInCart) {
-                let product = products.find(value => Number(value.id) === Number(idProduct));
-                user.cart.unshift({
-                    ...product,
-                    quantity: quantity,
-                })
-            }else{
-                let product = user.cart.find(value => Number(value.id) === Number(idProduct));
-                product.quantity += quantity;
+// app.post('/api/cart', authenticateJWT, (req, res) => {
+//     const  userID  = req.user.id;
+//     const { idProduct , quantity} = req.body;
+//     users.forEach(user => {
+//         if (Number(user.id) === Number(userID)) {
+//             let checkInCart = user.cart.some(item => Number(item.id) === Number(idProduct));
+//             if (!checkInCart) {
+//                 let product = products.find(value => Number(value.id) === Number(idProduct));
+//                 user.cart.unshift({
+//                     ...product,
+//                     quantity: quantity,
+//                 })
+//             }else{
+//                 let product = user.cart.find(value => Number(value.id) === Number(idProduct));
+//                 product.quantity += quantity;
 
-            }
-        }
-    });
-    res.status(201).json( {message: 'add success' });
+//             }
+//         }
+//     });
+//     res.status(201).json( {message: 'add success' });
+// });
+
+app.post('/api/cart', authenticateJWT, (req, res) => {
+    const { idProduct, quantity } = req.body;
+
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+        return res.status(400).json({ message: 'Invalid quantity' });
+    }
+
+    const user = users.find((u) => u.email === req.user.email);
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const productData = products.find(p => Number(p.id) === Number(idProduct));
+    if (!productData) {
+        return res.status(404).json({ message: 'Product not found' });
+    }
+
+    const cartItem = user.cart.find(item => Number(item.id) === Number(idProduct));
+
+    if (!cartItem) {
+        user.cart.unshift({
+            ...productData,
+            quantity: quantity
+        });
+    } else {
+        cartItem.quantity += quantity;
+    }
+
+    return res.status(201).json({ message: 'Add success' });
+});
+
+// delete cart
+app.delete("/api/cart/:id", authenticateJWT, (req, res) => {
+    const user = users.find((u) => u.email === req.user.email);
+    const id = req.params.id;
+    if (!user) {
+        return res.status(404).json({ message: "Không tìm thấy User" });
+    }
+
+    const { password, ...userWithoutPassword } = user;
+
+    const carts = userWithoutPassword.cart
+    carts = carts.filter((item) => item.id !== id);
+    res.status(204).send();
 });
 // app.patch('/api/products/:id', authenticateJWT, (req, res) => {
 //     const id = req.params.id;

@@ -245,10 +245,11 @@
     box-shadow: 0 0px 5px gray;
     top: 190%;
     border-radius: 3px;
-    height: auto;
     font-size: 13px;    
     display: none;
     z-index: 4;
+    max-height: 350px;
+    overflow: auto;
 }
 
 .lichSuTimKiem .tieude{
@@ -272,7 +273,7 @@
     margin-right: 20px;
 }
 
-.lichSuTimKiem .noiDungTimKiem  :hover{
+.lichSuTimKiem .noiDungTimKiem:hover{
     background-color: rgba(202, 187, 187, 0.291);
     cursor: pointer;
 }

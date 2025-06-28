@@ -14,7 +14,7 @@ const store = configureStore({
     productSale: productSaleSlice,
     categories : categoriesSLice,
     news : newsSlice,
-    users : userSlice,
+    user : userSlice,
     cart: cartSlice,
   },
 });

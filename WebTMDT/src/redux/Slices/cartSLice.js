@@ -50,7 +50,7 @@ const cartSlice = createSlice({
             })
             .addCase(addCart.fulfilled, (state, action) => {
                 state.loading = false;
-                state.cart.unshift(action.payload);
+                // state.cart.unshift(action.payload);
             })
             .addCase(addCart.rejected, (state, action) => {
                 state.loading = false;

@@ -15,6 +15,11 @@
     justify-content: space-between;
 }
 
+.chiTietThanhToan i:hover{
+    cursor: pointer;
+    opacity: 0.5;
+}
+
 .chiTietThanhToan img {
     width: 60px;
     height: 60px;
@@ -51,4 +56,9 @@
     line-height: 10px;
     font-size: 16px;
     background-color: grey;
+}
+
+.small-heading {
+  font-size: 0.9em;
+  font-weight: bold;
 }
