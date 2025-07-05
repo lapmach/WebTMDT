@@ -2,48 +2,44 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import "./header.css"
-import { fetchUserNow} from '../../redux/Slices/userSlice';
+import { fetchUserNow } from '../../redux/Slices/userSlice';
 import { fetchProduct } from '../../redux/Slices/productsSlice';
 import { fetchCart } from '../../redux/Slices/cartSLice';
 import LogoutButton from '../LogoutButton/LogoutButton';
 
 const Header = () => {
+    
     const categories = useSelector((state) => state.categories.categories);
     const accessToken = localStorage.getItem("accessToken");
     const currentUser = localStorage.getItem("currentUser");
     const navigate = useNavigate();
+
     const handleToProduct = (id) => {
         navigate(`/products/${id}`);
-        console.log("id----", id);
-
     }
-    console.log("access", accessToken);
+
 
     const user = useSelector((state) => state.user.user);
     const carts = useSelector((state) => state.cart.cart);
     const products = useSelector((state) => state.products.products)
-    const [cart , setCart] = useState(null);
-    console.log("cart", carts);
+   
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(fetchUserNow());
-        dispatch(fetchProduct());
-        dispatch(fetchCart());
-    }, [dispatch]);
 
-    useEffect(()=>{
-        if(carts){
-            setCart(carts);
+    useEffect(() => {
+        if (currentUser) {
+            dispatch(fetchCart());
+            dispatch(fetchProduct());
         }
-    },[carts])
+    }, [currentUser])
 
 
 
-    useEffect(() => {
-            dispatch(fetchCart())
-    }, [dispatch]);
+
+    // useEffect(() => {
+    //         dispatch(fetchCart())
+    // }, [dispatch]);
 
 
     const [searchItem, setSearchItem] = useState("");
@@ -219,8 +215,8 @@ const Header = () => {
                                     <li className="navbar-list__item">
                                         Xin Chào {currentUser}
                                     </li>
-                                    <li className="navbar-list__item logoutBtn" style={{borderLeft: "none"}}>
-                                        <LogoutButton/>
+                                    <li className="navbar-list__item logoutBtn" style={{ borderLeft: "none" }}>
+                                        <LogoutButton />
                                     </li>
                                 </>
                             }
@@ -242,11 +238,11 @@ const Header = () => {
                                 </div>
 
                                 {filteredProducts.map(item => (
-                                    <Link style={{textDecoration: "none"}} to={`/products/${item.id}`}>
-                                    <div onClick={() => handleToProduct(item.id)} key={item.id} className="noiDungTimKiem">
-                                        <img src={item.img} alt="" />
-                                        <p>{item.name}</p>
-                                    </div>
+                                    <Link key={item.id} style={{ textDecoration: "none" }} to={`/products/${item.id}`}>
+                                        <div onClick={() => handleToProduct(item.id)} key={item.id} className="noiDungTimKiem">
+                                            <img src={item.img} alt="" />
+                                            <p>{item.name}</p>
+                                        </div>
                                     </Link>
                                 ))}
 
@@ -262,12 +258,12 @@ const Header = () => {
                     </div>
                     <div className="gioHang">
                         <i className="fa-solid fa-cart-shopping">
-                            <span className="thongBaoSoLuong">{cart?.length}</span>
+                            <span className="thongBaoSoLuong">{carts?.length}</span>
                             <div className="ThongBaoGioHang">
                                 <div className="headerOf_Notify2">
                                     <h3>Sản phẩm mới thêm</h3>
                                 </div>
-                                {cart?.map(item => (
+                                {Array.isArray(carts) && carts.map(item => (
                                     <div key={item.id} className="sanPhamThongBao2">
                                         <div className="hinh2">
                                             <img src={item.img} alt="" />

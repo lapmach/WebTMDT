@@ -232,7 +232,7 @@ app.post('/api/login', (req, res) => {
     }
     const user = users.find((u) => u.email === email && u.password === password);
     if (!user) return res.status(401).json({ message: 'Thông tin đăng nhập sai' });
-    const token = jwt.sign({ email: user.email , id: user.id }, JWT_SECRET, { expiresIn: '30m' });
+    const token = jwt.sign({ email: user.email , id: user.id }, JWT_SECRET, { expiresIn: '3h' });
     res.json({ accessToken: token, user: { id: user.id, email: user.email } });
 });
 // API Lấy danh sách users (dùng cho dropdown price/assignedTo)
@@ -279,13 +279,17 @@ app.get('/api/products/:id', authenticateJWT, (req, res) => {
     else res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
 });
 app.post('/api/products', authenticateJWT, (req, res) => {
-    const { name } = req.body;
+    const { name , img , listImg , categoriesId , description , price , brand } = req.body;
     if (!name) return res.status(400).json({ message: 'Tên sản phẩm là bắt buộc' });
     const newproduct = {
         id: Date.now().toString(),
+        img,
+        listImg,
         name,
-        quantity: 1,
-        price: 200,
+        price,
+        categoriesId,
+        description,
+        brand,
         createdAt: formatDay(),
     };
     products.push(newproduct);
@@ -390,31 +394,69 @@ app.delete("/api/cart/:id", authenticateJWT, (req, res) => {
     if (!user) {
         return res.status(404).json({ message: "Không tìm thấy User" });
     }
-
-    const { password, ...userWithoutPassword } = user;
-
-    const carts = userWithoutPassword.cart
-    carts = carts.filter((item) => item.id !== id);
+   
+    user.cart = user.cart.filter((item) => item.id !== id);
     res.status(204).send();
 });
-// app.patch('/api/products/:id', authenticateJWT, (req, res) => {
-//     const id = req.params.id;
-//     const productIndex = products.findIndex((product) => product.id === id);
-//     if (productIndex > -1) {
-//         products[productIndex] = { ...products[productIndex], ...req.body };
-//         res.json(products[productIndex]);
-//     } else {
-//         res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
-//     }
-// });
-// app.delete('/api/products/:id', authenticateJWT, (req, res) => {
-//     const id = req.params.id;
-//     // if (tasks.some((task) => task.productId === id)) {
-//     //     return res.status(400).json({ message: 'Không thể xóa dự án có nhiệm vụ' });
-//     // }
-//     products = products.filter((product) => product.id !== id);
-//     res.status(204).send();
-// });
+
+app.patch('/api/cart/:id', authenticateJWT, (req, res) => {
+    const { quantity } = req.body;
+    const id = req.params.id;
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+        return res.status(400).json({ message: 'Invalid quantity' });
+    }
+
+    const user = users.find((u) => u.email === req.user.email);
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+
+    const cartIndex = user.cart.findIndex((product) => product.id === id);
+    if (cartIndex > -1) {
+        user.cart[cartIndex] = { ...user.cart[cartIndex], ...req.body };
+        res.json(user.cart[cartIndex]);
+    } else {
+        res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+    }
+});
+
+// API Đơn hàng
+app.get('/api/payment', authenticateJWT, (req, res) => {
+    const user = users.find((u) => u.email === req.user.email);
+    if (!user) {
+        return res.status(404).json({ message: "Không tìm thấy cart" });
+    }
+
+    const { password, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword.bill);
+});
+
+app.post('/api/payment', authenticateJWT, (req, res) => {
+    const { name , phone , address , note , cart , totalPrice } = req.body;
+
+
+    const user = users.find((u) => u.email === req.user.email);
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    let newBill = {
+        id: Date.now().toString(),
+        name,
+        phone,
+        address,
+        note,
+        status : "dangVanChuyen",
+        cart,
+        totalPrice,
+        createdAt : formatDay()
+    }
+    user.bill.unshift(newBill);
+    user.cart = [];
+
+    return res.status(201).json(newBill);
+});
 
 
 

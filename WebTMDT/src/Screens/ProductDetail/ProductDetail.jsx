@@ -4,12 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProduct, fetchProductById } from '../../redux/Slices/productsSlice';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { addCart, fetchCart } from '../../redux/Slices/cartSLice';
+import { toast } from 'react-toastify';
 
 const ProductDetail = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { id } = useParams();
+    const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN').format(price);
+    };
+
+
     const [count, setCount] = useState(1);
+    const currentUser = localStorage.getItem("currentUser");
 
     useEffect(() => {
         dispatch(fetchProductById(id));
@@ -25,28 +32,31 @@ const ProductDetail = () => {
 
 
     // const [selectedImage, setSelectedImage] = useState(product?.img);
-     
+
     const [selectedImage, setSelectedImage] = useState(null);
- 
+
     useEffect(() => {
-        if(product?.img) {
+        if (product?.img) {
             setSelectedImage(product.img)
         }
     }, [product])
- 
-    console.log("cart", cart);
-    console.log("Pro", product);
-    console.log("Pro nhieu" , products);
-    
-    
-    
+
+
+
+
 
     const handleAddToCart = () => {
-       if(product){
-         dispatch(addCart({idProduct : id , quantity: count}))
-         .then(() => dispatch(fetchCart()));
-       }
-       navigate("/payment");
+        if (currentUser) {
+            dispatch(addCart({ idProduct: id, quantity: count }))
+                .then(() => dispatch(fetchCart()));
+            toast.success('Mua hàng thành công!', {
+                position: 'top-right',
+                autoClose: 2000,
+                hideProgressBar: false,
+                theme: 'light',
+            });
+        }
+        //    navigate("/payment");
     }
 
 
@@ -87,7 +97,7 @@ const ProductDetail = () => {
                             <h2>{product.name}</h2>
                             <div className="gia">
                                 <h5>Giá: </h5>
-                                <h6>{product.price} VNĐ</h6>
+                                <h6>{formatPrice(product.price)} VNĐ</h6>
                             </div>
                             <p>{product.description}</p>
                             <div className="d-flex btnTangGiam">
@@ -96,9 +106,9 @@ const ProductDetail = () => {
                                 <button className="btnTangGiamSL" onClick={() => { setCount(count + 1) }}>+</button>
                             </div>
                             <div className="nut" style={{ paddingTop: '10px' }}>
-                                
-                                    <button onClick={handleAddToCart}>ĐẶT HÀNG</button>
-                            
+
+                                <button onClick={handleAddToCart}>ĐẶT HÀNG</button>
+
                             </div>
                             <div className="chiaSe">
                                 <span className="tieuDe">Chia Sẻ: </span>
@@ -139,7 +149,7 @@ const ProductDetail = () => {
                                         <div className="moTaSP">
                                             <h4>{item.name}</h4>
                                             <h5>{item.price}VNĐ</h5>
-                                            <button onClick={()=> {navigate(`/products/${item.id}`)}}>Xem ngay</button>
+                                            <button onClick={() => { navigate(`/products/${item.id}`) }}>Xem ngay</button>
                                         </div>
                                     </div>
                                 ))}

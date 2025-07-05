@@ -8,20 +8,20 @@ export const fetchProduct = createAsyncThunk("products/fetchProduct", async () =
     return response.data;
 })
 
-export const addProduct = createAsyncThunk("products/addProduct", async ({ name , price }) => {
-    const reponse = await axiosClient.post("/api/products", { name , price });
+export const addProduct = createAsyncThunk("products/addProduct", async ({ name, img, listImg, categoriesId, description, price, brand }) => {
+    const reponse = await axiosClient.post("/api/products", { name, img, listImg, categoriesId, description, price, brand });
     return reponse.data;
 })
 
 export const deleteProduct = createAsyncThunk("products/deleteProduct", async (id) => {
-        await axiosClient.delete(`/api/products/${id}`);
-        return id; 
+    await axiosClient.delete(`/api/products/${id}`);
+    return id;
 })
 
-export const updateProduct = createAsyncThunk("products/updateProduct", async ({ id, name , price }) => {
+export const updateProduct = createAsyncThunk("products/updateProduct", async ({ id, name, price }) => {
 
 
-    const updateProduct= { name : name , price : price };
+    const updateProduct = { name: name, price: price };
     const response = await axiosClient.patch(`/api/products/${id}`, updateProduct)
 
     return response.data;
@@ -34,15 +34,18 @@ export const fetchProductById = createAsyncThunk('products/fetchProductById', as
 
 
 
-const initialState = { products: [], loading: false, error: null, filter: "", currentProduct: null };
+const initialState = { products: [], loading: false, success: false, error: null, filter: "", currentProduct: null };
 
 const productsSlice = createSlice({
     name: "products",
     initialState,
     reducers: {
-        setFilter: (state, action) => {
-            state.filter = action.payload;
-        },
+        resetStatus: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.success = false;
+            state.newProduct = null;
+        }
     },
 
     extraReducers: (builder) => {
@@ -62,11 +65,11 @@ const productsSlice = createSlice({
             .addCase(addProduct.pending, (state, action) => {
                 state.loading = true;
                 state.error = null;
+                state.success = false;
             })
             .addCase(addProduct.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log(action.payload);
-
+                state.success = true;
                 state.products.push(action.payload);
             })
             .addCase(addProduct.rejected, (state, action) => {
@@ -83,7 +86,7 @@ const productsSlice = createSlice({
             })
             .addCase(deleteProduct.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ;
+                state.error = action.error.message;
             })
             .addCase(updateProduct.pending, (state, action) => {
                 state.loading = true;
@@ -115,5 +118,5 @@ const productsSlice = createSlice({
             })
     }
 });
-export const { setFilter } = productsSlice.actions
+export const { resetStatus } = productsSlice.actions
 export default productsSlice.reducer;

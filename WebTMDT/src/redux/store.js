@@ -7,6 +7,7 @@ import newsSlice from './Slices/newsSlice';
 import userSlice from './Slices/userSlice';
 import cartSlice from './Slices/cartSLice'
 
+
 const store = configureStore({
   reducer: {
     auth: authSlice,

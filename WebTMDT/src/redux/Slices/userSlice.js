@@ -9,10 +9,7 @@ export const fetchUserNow = createAsyncThunk("user/fetchUsers", async () => {
     return response.data;
 })
 
-export const deleteCart = createAsyncThunk("products/deleteCart", async (id) => {
-    await axiosClient.delete(`/api/cart/${id}`);
-    return id;
-})
+
 
 
 
@@ -41,18 +38,7 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             })
-            .addCase(deleteCart.pending, (state, action) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(deleteCart.fulfilled, (state, action) => {
-                state.loading = false;
-                state.user.cart = state.user.cart.filter(item => item.id !== action.payload);
-            })
-            .addCase(deleteCart.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.error.message;
-            })
+           
 
 
     }

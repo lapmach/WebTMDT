@@ -1,7 +1,7 @@
 .divBorder{
     border: 1px solid #80808069;
     height: 50px;
-    width: 85%;
+    /* width: 85%; */
     padding: 11px 0px 0px 40px;
 }
 
@@ -62,3 +62,32 @@
   font-size: 0.9em;
   font-weight: bold;
 }
+
+.divRelative{
+    position: relative;
+}
+
+.paymentConfirm{
+    display: flex;
+    justify-content: space-between;
+}
+/* .paymentConfirm{
+    position: absolute;
+    background-color: black;
+    height: 500px;
+    width: 700px;
+    z-index: 100;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.overlay{
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    z-index: 99;
+    background-color: rgba(0, 0, 0, 0.979);
+  
+  
+} */

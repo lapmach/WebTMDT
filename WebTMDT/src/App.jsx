@@ -17,12 +17,19 @@ import NotFound from './Screens/NotFound/NotFound'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute';
 import ProductDetail from './Screens/ProductDetail/ProductDetail'
 import Payment from './Screens/Payment/Payment'
+import Orders from './Screens/Orders/Orders'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Admin from './Screens/Admin/Admin'
+import AddProduct from './Components/AddProduct/AddProduct'
 function App() {
 
   return (
     <>
       <BrowserRouter>
+        <ToastContainer position="top-right" autoClose={2000} />
         <Routes>
+          <Route path='/admin' element={<Admin/>}></Route>
           <Route path='/' element={<CommonPage/>}>
               <Route path='/home' element={
                 <ProtectedRoute>
@@ -33,9 +40,11 @@ function App() {
               <Route path='/register' element={<Register/>}></Route>
               <Route path='/categories/:id' element={<ProductsList/>}></Route>
               <Route path='/products/:id' element={<ProductDetail/>}></Route>
-             
-              <Route path='*' element={<NotFound/>}></Route>
+              <Route path='/orders' element={<Orders/>}></Route>
+              <Route path='*' element={<NotFound/>}></Route>        
           </Route>
+           
+            <Route path='/addProduct' element={<AddProduct/>}></Route>
            <Route path='/payment' element={<Payment/>}></Route>
         </Routes>
       </BrowserRouter>

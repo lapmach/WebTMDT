@@ -6,7 +6,10 @@ import { fetchNews } from '../../redux/Slices/newsSlice';
 import { fetchCategories } from './../../redux/Slices/categoriesSlice';
 import { Link } from 'react-router-dom';
 import { fetchProduct } from '../../redux/Slices/productsSlice';
-
+import FadeInSection from '../../Components/EffectScroll/interObserver';
+import FullPageLoader from '../../Components/SpinerLoading/Loading';
+import FadeInLeft from '../../Components/EffectScroll/FadeInLeft';
+import FadeInRight from '../../Components/EffectScroll/FadeInRight';
 const Home = () => {
 
     const productSale = useSelector((state) => state.productSale.productSale);
@@ -49,7 +52,7 @@ const Home = () => {
 
 
     if (loading) {
-        return <p>Loading...</p>
+        return <FullPageLoader/>
     }
 
     if (error) {
@@ -60,7 +63,8 @@ const Home = () => {
         <div>
             <div>
 
-                <div className="banner">
+               <FadeInSection>
+                 <div className="banner">
                     <img src="/img/banner.jpg" alt="" className="anhBanner" />
                     <div className="container text-center bg_chinhSach">
                         <div className="row">
@@ -103,6 +107,7 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
+               </FadeInSection>
                 <section className="section container mr_top">
                     <div className="text-center">
                         <div className="tieuDe">
@@ -112,7 +117,8 @@ const Home = () => {
                     <div className='row'>
                         {categories.map(item => (
                             <div key={item.id} className='col-lg-1 categories'>
-                                <Link to={`/categories/${item.id}`}>
+                                <FadeInSection>
+                                    <Link to={`/categories/${item.id}`}>
                                     <div className="img">
                                         <img src={item.img} alt="" />
                                     </div>
@@ -120,6 +126,7 @@ const Home = () => {
                                         <p>{item.name}</p>
                                     </div>
                                 </Link>
+                                </FadeInSection>
                             </div>
                         ))}
 
@@ -136,7 +143,8 @@ const Home = () => {
                     <div className="row">
                         {newProducts.map(item => (
                             <div key={item.id} className="col-lg-3 col-md-4 col-sm-4 col-12">
-                                <div className="sanPhamMoi">
+                               <FadeInSection>
+                                 <div className="sanPhamMoi">
                                     <div className="overlay" />
                                     <div className="iconMuaHang">
                                         <i className="fa-regular fa-eye" />
@@ -146,6 +154,7 @@ const Home = () => {
                                     <h6>NIKE</h6>
                                     <p>{formatPrice(item.price)}₫</p>
                                 </div>
+                               </FadeInSection>
                             </div>
                         ))}
 
@@ -166,7 +175,8 @@ const Home = () => {
                     <div className="row">
                         {productSale.map(item => (
                             <div key={item.id} className="col-lg-3 col-md-4 col-sm-4 col-12">
-                                <div className="sanPhamMoi">
+                                <FadeInSection>
+                                    <div className="sanPhamMoi">
                                     <div className="overlay"></div>
                                     <div className="iconMuaHang">
                                         <i className="fa-regular fa-eye"></i>
@@ -180,6 +190,7 @@ const Home = () => {
 
                                     </div>
                                 </div>
+                                </FadeInSection>
                             </div>
                         ))}
 
@@ -198,7 +209,8 @@ const Home = () => {
                     </div>
                     <div className="row">
                         <div className="col-md-6 col-12">
-                            <div className="phuKienTrai">
+                           <FadeInLeft>
+                             <div className="phuKienTrai">
                                 <a className="image" href="#">
                                     <img src="/img/phuKien1.jpg" alt="" className="image" />
                                 </a>
@@ -210,9 +222,11 @@ const Home = () => {
                                     </p>
                                 </div>
                             </div>
+                           </FadeInLeft>
                         </div>
                         <div className="col-md-6 col-12">
-                            <div className="phuKienPhai">
+                           <FadeInRight>
+                             <div className="phuKienPhai">
                                 <a className="image" href="#">
                                     <img src="/img/phuKien2.jpg" alt="" />
                                 </a>
@@ -236,6 +250,7 @@ const Home = () => {
                                     </p>
                                 </div>
                             </div>
+                           </FadeInRight>
                         </div>
                     </div>
                 </section>
