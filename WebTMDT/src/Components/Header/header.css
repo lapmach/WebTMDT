@@ -246,7 +246,7 @@
     top: 190%;
     border-radius: 3px;
     font-size: 13px;    
-    display: none;
+    /* display: none; */
     z-index: 4;
     max-height: 350px;
     overflow: auto;
@@ -279,7 +279,7 @@
 }
 
 .divTimKiemHang:focus ~ .lichSuTimKiem{
-    display: block;
+    /* display: block; */
 }
 
 .PhanTimKiem .timKiem button{

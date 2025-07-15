@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function ImageUploaderMulti({ onUpload }) {
+function ImageUploaderMulti({ editPro , onUpload }) {
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState([]);
+  
+
+    useEffect(()=> {
+      setPreviews(editPro.listImg ?? "");
+    }, [editPro])
 
   const handleFilesChange = async (e) => {
     const files = Array.from(e.target.files);
@@ -39,8 +44,8 @@ function ImageUploaderMulti({ onUpload }) {
       {uploading && <p className="text-sm text-gray-500">Đang tải ảnh...</p>}
 
       <div className="flex flex-wrap gap-2 mt-2">
-        {previews.map((url, idx) => (
-          <img key={idx} src={url} alt={`Preview ${idx}`} className="w-24 h-24 object-cover rounded" />
+        {(previews || []).map((url, idx) => (
+          <img key={idx} src={url} alt={`Preview ${idx}`} className="w-24 h-24 object-cover rounded"  style={{width:"120px" , height:"120px" , marginRight: "10px"}}/>
         ))}
       </div>
     </div>

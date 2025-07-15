@@ -207,14 +207,14 @@ const ProductsList = () => {
                                     </li>
                                 </ul>
                             </div> */}
-                            <div className="sapXep">
+                            {/* <div className="sapXep">
                                 <label><b>GIÁ SẢN PHẨM</b></label><br />
                                 <input type="radio" name="xepTheoGia"  value="lt1" checked = {rage === "lt10"} onChange={(e) => {setRage(e.target.value)}}/>Giá dưới 1.000.000đ<br />
                                 <input type="radio" name="xepTheoGia" value="1to3" checked = {rage === "1to3"} onChange={(e) => {setRage(e.target.value)}}/>1.000.000đ - 3.000.000đ <br />
                                 <input type="radio" name="xepTheoGia" value="3to5"  checked = {rage === "3to5"} onChange={(e) => {setRage(e.target.value)}}/>3.000.000đ - 5.000.000đ  <br />
                                 <input type="radio" name="xepTheoGia" value="5to10"  checked = {rage === "5to10"} onChange={(e) => {setRage(e.target.value)}}/>5.000.000đ - 10.000.000đ  <br />
                                 <input type="radio" name="xepTheoGia" value="gt10"  checked = {rage === "gt10"} onChange={(e) => {setRage(e.target.value)}}/>Giá trên 10.000.000đ
-                            </div>
+                            </div> */}
                         </aside>
                     </div>
                     <div className="col-lg-9 col-md-12 col-sm-12 col-12">
@@ -242,155 +242,7 @@ const ProductsList = () => {
                                     </Link>
                                 </div>
                             ))}
-                            {/* <div className="col-lg-4 col-md-4 col-sm-6 col-6">
-                                <div className="sanPham">
-                                    <div className="overlay3" />
-                                    <div className="iconMuaHang">
-                                        <i className="fa-solid fa-cart-plus" />
-                                    </div>
-                                    <a href="#">
-                                        <img src="img/sp2.jpg" alt="" />
-                                    </a>
-                                    <h2>Adidas</h2>
-                                    <a href>
-                                        Giày Adidas Ultraboost DNA SEA CITY
-                                    </a>
-                                    <div className="gia">
-                                        <p className="giaCu">5.700.000đ</p>
-                                        <p className="giaMoi">5.000.000đ</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-4 col-sm-6 col-6">
-                                <div className="sanPham">
-                                    <div className="overlay3" />
-                                    <div className="iconMuaHang">
-                                        <i className="fa-solid fa-cart-plus" />
-                                    </div>
-                                    <a href="#">
-                                        <img src="img/sp3.jpg" alt="" />
-                                    </a>
-                                    <h2>Adidas</h2>
-                                    <a href>
-                                        Giày Adidas Ultraboost DNA X LEGO
-                                    </a>
-                                    <div className="gia">
-                                        <p className="giaCu">3.500.000đ</p>
-                                        <p className="giaMoi">2.200.000đ</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-4 col-sm-6 col-6">
-                                <div className="sanPham">
-                                    <div className="overlay3" />
-                                    <div className="iconMuaHang">
-                                        <i className="fa-solid fa-cart-plus" />
-                                    </div>
-                                    <a href="#">
-                                        <img src="img/sp4.jpg" alt="" />
-                                    </a>
-                                    <h2>Adidas</h2>
-                                    <a href>
-                                        GIÀY Adidas Ultraboost DNA X LEGO
-                                    </a>
-                                    <div className="gia">
-                                        <p className="giaCu">6.600.000đ</p>
-                                        <p className="giaMoi">5.550.000đ</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-4 col-sm-6 col-6">
-                                <div className="sanPham">
-                                    <div className="overlay3" />
-                                    <div className="iconMuaHang">
-                                        <i className="fa-solid fa-cart-plus" />
-                                    </div>
-                                    <a href="#">
-                                        <img src="img/sp5.jpg" alt="" />
-                                    </a>
-                                    <h2>Adidas</h2>
-                                    <a href>
-                                        Giày Stan Smith
-                                    </a>
-                                    <div className="gia">
-                                        <p className="giaCu">3.700.000đ</p>
-                                        <p className="giaMoi">2.500.000đ</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-4 col-sm-6 col-6">
-                                <div className="sanPham">
-                                    <div className="overlay3" />
-                                    <div className="iconMuaHang">
-                                        <i className="fa-solid fa-cart-plus" />
-                                    </div>
-                                    <a href="#">
-                                        <img src="img/sp6.jpg" alt="" />
-                                    </a>
-                                    <h2>Adidas</h2>
-                                    <a href>
-                                        Giày ULTRABOOST 21
-                                    </a>
-                                    <div className="gia">
-                                        <p className="giaCu">2.700.000đ</p>
-                                        <p className="giaMoi">2.200.000đ</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-4 col-sm-6 col-6">
-                                <div className="sanPham">
-                                    <div className="overlay3" />
-                                    <div className="iconMuaHang">
-                                        <i className="fa-solid fa-cart-plus" />
-                                    </div>
-                                    <a href="#">
-                                        <img src="img/giaymoi1.jpg" alt="" />
-                                    </a>
-                                    <h2>Nike</h2>
-                                    <a href>
-                                        Nike Air Force 1 07 Trắng
-                                    </a>
-                                    <div className="gia">
-                                        <p className="giaMoi">5.000.000đ</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-4 col-sm-6 col-6">
-                                <div className="sanPham">
-                                    <div className="overlay3" />
-                                    <div className="iconMuaHang">
-                                        <i className="fa-solid fa-cart-plus" />
-                                    </div>
-                                    <a href="#">
-                                        <img src="img/giaymoi2.jpg" alt="" />
-                                    </a>
-                                    <h2>Nike</h2>
-                                    <a href>
-                                        Nike Air Force 47 Trắng Tím
-                                    </a>
-                                    <div className="gia">
-                                        <p className="giaMoi">2.000.000đ</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-4 col-sm-6 col-6">
-                                <div className="sanPham">
-                                    <div className="overlay3" />
-                                    <div className="iconMuaHang">
-                                        <i className="fa-solid fa-cart-plus" />
-                                    </div>
-                                    <a href="#">
-                                        <img src="img/giaymoi4.jpg" alt="" />
-                                    </a>
-                                    <h2>Nike</h2>
-                                    <a href>
-                                        Nike Air Force 02 Vàng Trắng
-                                    </a>
-                                    <div className="gia">
-                                        <p className="giaMoi">6.666.000đ</p>
-                                    </div>
-                                </div>
-                            </div> */}
+                     
                         </div>
                         <div className="nutChuyenTrang">
                             <div className="so1">1</div>

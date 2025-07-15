@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
-// import "./Admin.css"
-import { Link } from 'react-router-dom';
+import "./Admin.css"
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct, fetchProduct } from '../../redux/Slices/productsSlice';
 import { fetchCategories } from '../../redux/Slices/categoriesSlice';
-const Admin = () => {
+const Admin = ({setEditPro}) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const product = useSelector((state) => state.products.products);
     const currentUser = localStorage.getItem("currentUser");
 
@@ -18,6 +19,11 @@ const Admin = () => {
 
     const handleDelete = (id) => {
         dispatch(deleteProduct(id));
+    }
+
+    const handleEdit = (product) => {
+        setEditPro(product);
+        navigate("/addProduct");
     }
    
 
@@ -463,7 +469,7 @@ const Admin = () => {
                                                             <td>{item.price}</td>
                                                             <td>{item.createdAt}</td>
                                                             <td>
-                                                                <i class="fa-solid fa-pen-to-square mx-3"></i>
+                                                                <i class="fa-solid fa-pen-to-square mx-3" onClick={() => handleEdit(item)}></i>
                                                                 <i class="fa-solid fa-circle-xmark" onClick={() => handleDelete(item.id)}></i>
                                                             </td>
                                                         </tr>

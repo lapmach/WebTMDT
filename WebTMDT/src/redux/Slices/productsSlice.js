@@ -18,10 +18,10 @@ export const deleteProduct = createAsyncThunk("products/deleteProduct", async (i
     return id;
 })
 
-export const updateProduct = createAsyncThunk("products/updateProduct", async ({ id, name, price }) => {
+export const updateProduct = createAsyncThunk("products/updateProduct", async ({ id, name, img , listImg, categoriesId, description, price, brand  }) => {
 
 
-    const updateProduct = { name: name, price: price };
+    const updateProduct = { name, img , listImg, categoriesId, description, price, brand };
     const response = await axiosClient.patch(`/api/products/${id}`, updateProduct)
 
     return response.data;

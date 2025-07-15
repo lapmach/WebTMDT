@@ -23,13 +23,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import Admin from './Screens/Admin/Admin'
 import AddProduct from './Components/AddProduct/AddProduct'
 function App() {
+  const [editPro , setEditPro] = useState("");
 
   return (
     <>
       <BrowserRouter>
         <ToastContainer position="top-right" autoClose={2000} />
         <Routes>
-          <Route path='/admin' element={<Admin/>}></Route>
+          <Route path='/admin' element={<Admin setEditPro = {setEditPro}/>}></Route>
           <Route path='/' element={<CommonPage/>}>
               <Route path='/home' element={
                 <ProtectedRoute>
@@ -44,7 +45,7 @@ function App() {
               <Route path='*' element={<NotFound/>}></Route>        
           </Route>
            
-            <Route path='/addProduct' element={<AddProduct/>}></Route>
+            <Route path='/addProduct' element={<AddProduct editPro = {editPro}/>}></Route>
            <Route path='/payment' element={<Payment/>}></Route>
         </Routes>
       </BrowserRouter>

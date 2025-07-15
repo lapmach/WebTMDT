@@ -54,7 +54,11 @@ const Payment = () => {
     }
 
     const handlePayment = () => {
-        dispatch(addBill({name: data.name , phone: data.phone , address: data.address , note: data.note , cart: cart , totalPrice: payByWhat ? provisionalAmount + SHIPPING_FEE : 0 }))
+        if(data.name == "" || data.phone == "" || data.address == ""){
+            alert("Vui lòng điền đầy đủ thông tin !!!")
+            return;
+        }
+        dispatch(addBill({ name: data.name, phone: data.phone, address: data.address, note: data.note, cart: cart, totalPrice: payByWhat ? provisionalAmount + SHIPPING_FEE : 0 }))
         navigate("/orders");
     }
 
@@ -72,149 +76,155 @@ const Payment = () => {
                 {/* Products Start */}
                 <div className="container-fluid about py-5">
                     <div className="container">
-                        <div className="row">
-                            <div className="col-lg-4 col-md-4">
-                                <form >
+                        <form className="was-validated">
+                            <div className="row">
+                                <div className="col-lg-4 col-md-4">
+
                                     {/* <div className="mb-3 mt-3">
                                         <label htmlFor="email" className="form-label">Email:</label>
                                         <input type="email" className="form-control" id="email" placeholder="Enter email" name="email" />
                                     </div> */}
                                     <div className="mb-3">
                                         <label htmlFor="pwd" className="form-label">Họ Tên:</label>
-                                        <input type="text" value={data.name} onChange={handleChange} className="form-control" id="name" placeholder="Enter name" name="name" />
+                                        <input type="text" value={data.name} onChange={handleChange} required className="form-control" id="name" placeholder="Enter name" name="name" />
+                                        <div className="valid-feedback" />
+                                        <div className="invalid-feedback">Vui lòng nhập họ tên</div>
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="pwd" className="form-label">Số điện thoại:</label>
-                                        <input type="number" value={data.phone} onChange={handleChange} className="form-control" id="phone" placeholder="Enter phone number" name="phone" />
+                                        <input type="number" value={data.phone} onChange={handleChange} required className="form-control" id="phone" placeholder="Enter phone number" name="phone" />
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="pwd" className="form-label">Địa chỉ:</label>
-                                        <input type="text" value={data.address} onChange={handleChange} className="form-control" id="address" placeholder="Enter address" name="address" />
+                                        <input type="text" value={data.address} onChange={handleChange} required className="form-control" id="address" placeholder="Enter address" name="address" />
                                     </div>
                                     <label htmlFor="comment">Ghi chú:</label>
                                     <textarea onChange={handleChange} value={data.note} className="form-control" rows={5} id="comment" name="note" defaultValue={""} />
-                                </form>
-                            </div>
-                            <div className="col-lg-4 col-md-4">
-                                <label htmlFor="comment" className="mt-3">Vận chuyển:</label>
-                                <div className="form-check mt-2 divBorder">
-                                    <input onChange={(e) => { setShipCost(e.target.checked) }} required type="radio" className="form-check-input" id="radio1" name="optradio1" defaultValue="option" />Giao hàng tận nơi
-                                    <label className="form-check-label" htmlFor="radio1" />
-                                    <span id="giaVanChuyen" style={{ marginLeft: '110px' }}>{SHIPPING_FEE} VND</span>
+
+
+
                                 </div>
-                                <label htmlFor="comment" className="mt-4">Thanh Toán:</label>
-                                <div className="form-check mt-2 divBorder">
-                                    <input onChange={(e) => { setPayByWhat(e.target.checked) }} type="checkbox" className="form-check-input " id="phuongThucThanhToan" name="optradio" defaultValue="option1" />Thanh toán khi nhận hàng
-                                    <label className="form-check-label" htmlFor="radio" />
-                                    <i className="fa-regular fa-money-bill-1" style={{ color: '#0b92f9', marginLeft: '55px' }} />
+                                <div className="col-lg-4 col-md-4">
+                                    <label htmlFor="comment" className="mt-3">Vận chuyển:</label>
+                                    <div className="form-check mt-2 divBorder">
+                                        <input onChange={(e) => { setShipCost(e.target.checked) }} required type="radio" className="form-check-input" id="radio1" name="optradio1" defaultValue="option" />Giao hàng tận nơi
+                                        <label className="form-check-label" htmlFor="radio1" />
+                                        <span id="giaVanChuyen" style={{ marginLeft: '110px' }}>{SHIPPING_FEE} VND</span>
+                                    </div>
+                                    <label htmlFor="comment" className="mt-4">Thanh Toán:</label>
+                                    <div className="form-check mt-2 divBorder">
+                                        <input onChange={(e) => { setPayByWhat(e.target.checked) }} type="checkbox" className="form-check-input " id="phuongThucThanhToan" name="optradio" defaultValue="option1" />Thanh toán khi nhận hàng
+                                        <label className="form-check-label" htmlFor="radio" />
+                                        <i className="fa-regular fa-money-bill-1" style={{ color: '#0b92f9', marginLeft: '55px' }} />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-lg-4 col-md-4">
-                                <div className="thanhToan">
-                                    <table className="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Đơn Hàng</th>
-                                                <th />
-                                                <th />
-                                            </tr>
-                                        </thead>
-                                        <tbody id="parentThanhToan">
-                                            {
-                                                Array.isArray(cart) && cart.map(item => (
-                                                    <tr key={item.id} className="chiTietThanhToan">
-                                                        <td><img src={item.img} alt="" /></td>
-                                                        <td><div>
-                                                            <span className="mrLeft small-heading">{item.name}</span>
-                                                            <div className="d-flex mt-2">
-                                                                <button onClick={() => handleUpdate(item, item.quantity - 1)} className="btnTangGiamSL">-</button>
-                                                                <input type="text" onChange={(e) => handleUpdate(item, e.target.value)} value={item.quantity} style={{ width: '50px', border: '1px solid #00000024', textAlign: 'center', height: '22px' }} role="spinbutton" />
-                                                                <button onClick={() => handleUpdate(item, item.quantity + 1)} className="btnTangGiamSL">+</button>
-                                                            </div>
-                                                        </div></td>
-                                                        <td><span>{item.price}VNĐ</span></td>
-                                                        <td> <i onClick={() => handleDeleteCart(item.id)} className="fa-solid fa-circle-xmark"></i></td>
-                                                    </tr>
-                                                ))
-                                            }
+                                <div className="col-lg-4 col-md-4">
+                                    <div className="thanhToan">
+                                        <table className="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Đơn Hàng</th>
+                                                    <th />
+                                                    <th />
+                                                </tr>
+                                            </thead>
+                                            <tbody id="parentThanhToan">
+                                                {
+                                                    Array.isArray(cart) && cart.map(item => (
+                                                        <tr key={item.id} className="chiTietThanhToan">
+                                                            <td><img src={item.img} alt="" /></td>
+                                                            <td><div>
+                                                                <span className="mrLeft small-heading">{item.name}</span>
+                                                                <div className="d-flex mt-2">
+                                                                    <button onClick={() => handleUpdate(item, item.quantity - 1)} className="btnTangGiamSL">-</button>
+                                                                    <input type="text" onChange={(e) => handleUpdate(item, e.target.value)} value={item.quantity} style={{ width: '50px', border: '1px solid #00000024', textAlign: 'center', height: '22px' }} role="spinbutton" />
+                                                                    <button onClick={() => handleUpdate(item, item.quantity + 1)} className="btnTangGiamSL">+</button>
+                                                                </div>
+                                                            </div></td>
+                                                            <td><span>{item.price}VNĐ</span></td>
+                                                            <td> <i onClick={() => handleDeleteCart(item.id)} className="fa-solid fa-circle-xmark"></i></td>
+                                                        </tr>
+                                                    ))
+                                                }
 
 
-                                        </tbody>
-                                    </table>
-                                    <hr />
-                                    <div className="chiTietThanhToan1" style={{ marginLeft: '20px' }}>
-                                        <p>Tạm tính</p>
-                                        <p id="giaTamTinh">{payByWhat ? provisionalAmount : "0"} VNĐ</p>
-                                    </div>
-                                    <div className="chiTietThanhToan1" style={{ marginLeft: '20px' }}>
-                                        <p>Phí vận chuyển</p>
-                                        <p>{payByWhat ? SHIPPING_FEE : 0} VNĐ</p>
-                                    </div>
-                                    <hr />
-                                    <div className="chiTietThanhToan1" style={{ marginLeft: '20px' }}>
-                                        <h4>Tổng cộng:</h4>
-                                        <p id="giaTong">{ payByWhat ? provisionalAmount + SHIPPING_FEE : 0 } VNĐ</p>
-                                    </div>
-                                    <div className="chiTietThanhToan1">
-                                        <Link to={"/home"} style={{ cursor: 'pointer' }} className="mt-3 mx-3 anchor"><i className="fa-solid fa-chevron-left" />Quay lại trang chủ</Link>
-                                        <button id="btnDatHang" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#myModal">ĐẶT HÀNG</button>
-                                    </div>
+                                            </tbody>
+                                        </table>
+                                        <hr />
+                                        <div className="chiTietThanhToan1" style={{ marginLeft: '20px' }}>
+                                            <p>Tạm tính</p>
+                                            <p id="giaTamTinh">{payByWhat ? provisionalAmount : "0"} VNĐ</p>
+                                        </div>
+                                        <div className="chiTietThanhToan1" style={{ marginLeft: '20px' }}>
+                                            <p>Phí vận chuyển</p>
+                                            <p>{payByWhat ? SHIPPING_FEE : 0} VNĐ</p>
+                                        </div>
+                                        <hr />
+                                        <div className="chiTietThanhToan1" style={{ marginLeft: '20px' }}>
+                                            <h4>Tổng cộng:</h4>
+                                            <p id="giaTong">{payByWhat ? provisionalAmount + SHIPPING_FEE : 0} VNĐ</p>
+                                        </div>
+                                        <div className="chiTietThanhToan1">
+                                            <Link to={"/home"} style={{ cursor: 'pointer' }} className="mt-3 mx-3 anchor"><i className="fa-solid fa-chevron-left" />Quay lại trang chủ</Link>
+                                            <button type='submit' id="btnDatHang" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#myModal">ĐẶT HÀNG</button>
+                                        </div>
 
-                                    <div className="modal fade" id="myModal">
-                                        <div className="modal-dialog modal-lg">
-                                            <div className="modal-content">
-                                                {/* Modal Header */}
-                                                <div className="modal-header">
-                                                    <h4 className="modal-title">Xác nhận thanh toán</h4>
-                                                    <button type="button" className="btn-close" data-bs-dismiss="modal" />
-                                                </div>
-                                                {/* Modal body */}
-                                                <div className="modal-body">
-                                                    <h6>Họ tên: {data.name}</h6>
-                                                    <h6>Số điện thoại: {data.phone}</h6>
-                                                    <h6>Địa chỉ: {data.address}</h6>
-                                                    <h6>Ghi chú: {data.note}</h6>
-                                                    <h6>Phương thức thanh toán: {payByWhat ? "Thanh toán khi nhận hàng" : "Đã thanh toán"}</h6>
-
-                                                    <table className="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Ảnh sản phẩm</th>
-                                                                <th>Tên sản phẩm</th>
-                                                                <th>Số Lượng</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {
-                                                                Array.isArray(cart) && cart.map(item => (
-                                                                    <tr className='chiTietThanhToan'>
-                                                                        <td><img src={item.img} alt="" /></td>
-                                                                        <td>{item.name}</td>
-                                                                        <td>x{item.quantity}</td>
-                                                                    </tr>
-                                                                ))
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                    <div className="paymentConfirm mt-5">
-                                                        <div>
-                                                            <h5>Giá tính tạm: <b className='text-danger'>{payByWhat ? provisionalAmount : "0"} VNĐ</b> </h5>
-                                                            <h5>Phí vận chuyển: <b className='text-danger'>{payByWhat ? SHIPPING_FEE : "0"} VNĐ</b> </h5>
-                                                            <h5>Tổng tiền cần thanh toán:  <b className='text-danger'>{ payByWhat ? provisionalAmount + SHIPPING_FEE : "0" } VNĐ</b>  </h5>
-                                                        </div>
-                                                        <div className='mt-4'>
-                                                            <button id="btnDatHang" onClick={handlePayment} data-bs-dismiss="modal" className="btn btn-primary mt-3">XÁC NHẬN THANH TOÁN</button>
-                                                        </div>
+                                        <div className="modal fade" id="myModal">
+                                            <div className="modal-dialog modal-lg">
+                                                <div className="modal-content">
+                                                    {/* Modal Header */}
+                                                    <div className="modal-header">
+                                                        <h4 className="modal-title">Xác nhận thanh toán</h4>
+                                                        <button type="button" className="btn-close" data-bs-dismiss="modal" />
                                                     </div>
+                                                    {/* Modal body */}
+                                                    <div className="modal-body">
+                                                        <h6>Họ tên: {data.name}</h6>
+                                                        <h6>Số điện thoại: {data.phone}</h6>
+                                                        <h6>Địa chỉ: {data.address}</h6>
+                                                        <h6>Ghi chú: {data.note}</h6>
+                                                        <h6>Phương thức thanh toán: {payByWhat ? "Thanh toán khi nhận hàng" : "Đã thanh toán"}</h6>
 
+                                                        <table className="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Ảnh sản phẩm</th>
+                                                                    <th>Tên sản phẩm</th>
+                                                                    <th>Số Lượng</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {
+                                                                    Array.isArray(cart) && cart.map(item => (
+                                                                        <tr className='chiTietThanhToan'>
+                                                                            <td><img src={item.img} alt="" /></td>
+                                                                            <td>{item.name}</td>
+                                                                            <td>x{item.quantity}</td>
+                                                                        </tr>
+                                                                    ))
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                        <div className="paymentConfirm mt-5">
+                                                            <div>
+                                                                <h5>Giá tính tạm: <b className='text-danger'>{payByWhat ? provisionalAmount : "0"} VNĐ</b> </h5>
+                                                                <h5>Phí vận chuyển: <b className='text-danger'>{payByWhat ? SHIPPING_FEE : "0"} VNĐ</b> </h5>
+                                                                <h5>Tổng tiền cần thanh toán:  <b className='text-danger'>{payByWhat ? provisionalAmount + SHIPPING_FEE : "0"} VNĐ</b>  </h5>
+                                                            </div>
+                                                            <div className='mt-4'>
+                                                                <button id="btnDatHang" onClick={handlePayment} data-bs-dismiss="modal" className="btn btn-primary mt-3">XÁC NHẬN THANH TOÁN</button>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
 

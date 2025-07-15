@@ -87,30 +87,7 @@ let productSale = [
 
 let users = [
     {
-        email: "nana@example.com", password: "123", id: "1", cart: [{
-            id: "1", name: "Pin sạc dự phòng 30000mAh", price: 2000, img: "https://img.lazcdn.com/g/p/4c0d2aa0256029c99f2674e4a794b370.jpg_400x400q80.jpg_.avif", description: "Gồm có 1 miếng gà được chế biến sẵn ăn liền không cần chế biến lại", createdAt: "01/08/2022", categoriesId: "3", brand: "Logitech"
-            , listImg: [
-                "https://img.lazcdn.com/g/p/03e761230d42b5e07da524ed704c46e6.jpg_720x720q80.jpg_.webp",
-                "https://img.lazcdn.com/g/p/047f364c149c86c7ae7cd81fd2d82ccb.jpg_120x120q80.jpg_.webp",
-                "https://img.lazcdn.com/g/p/97692f19429846ccdc3b77d8f79b717e.jpg_120x120q80.jpg_.webp",
-                "https://img.lazcdn.com/g/p/6011e69b9b75d2062ae0457d56575566.jpg_120x120q80.jpg_.webp",
-            ]
-            ,quantity: 2
-        },
-        {
-        id: "3", name: "Nước hoa lưu hương thơm mát", price: 400, img: "https://img.lazcdn.com/g/p/d92a0bcb6deb64fcf8cd98049576a5d0.jpg_400x400q80.jpg_.avif", description: "Gồm có 2 miếng gà được chế biến sẵn ăn liền không cần chế biến lại", createdAt: "06/06/2025", categoriesId: "7", brand: "Channel"
-        ,
-        quantity: 1
-        ,
-         listImg: [
-            "https://img.lazcdn.com/g/p/03e761230d42b5e07da524ed704c46e6.jpg_720x720q80.jpg_.webp",
-            "https://img.lazcdn.com/g/p/047f364c149c86c7ae7cd81fd2d82ccb.jpg_120x120q80.jpg_.webp",
-            "https://img.lazcdn.com/g/p/97692f19429846ccdc3b77d8f79b717e.jpg_120x120q80.jpg_.webp",
-            "https://img.lazcdn.com/g/p/6011e69b9b75d2062ae0457d56575566.jpg_120x120q80.jpg_.webp",
-        ]
-    },
-    
-    ], bill: []
+        email: "nana@example.com", password: "123", id: "1", cart: [], bill: []
     },
     { email: "user2@example.com", password: "password456", id: "2", cart: [], bill: [] },
 ];
@@ -221,6 +198,8 @@ app.post('/api/signup', (req, res) => {
         email,
         password,
         id: Date.now().toString(),
+        cart : [],
+        bill: []
     };
     users.push(newUser);
     res.status(201).json({ message: 'Đăng ký thành công' });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import "./header.css"
@@ -8,10 +8,12 @@ import { fetchCart } from '../../redux/Slices/cartSLice';
 import LogoutButton from '../LogoutButton/LogoutButton';
 
 const Header = () => {
-    
+
     const categories = useSelector((state) => state.categories.categories);
     const accessToken = localStorage.getItem("accessToken");
     const currentUser = localStorage.getItem("currentUser");
+    const wrapperRef = useRef(null);
+    const [showSearch, setShowSearch] = useState(false);
     const navigate = useNavigate();
 
     const handleToProduct = (id) => {
@@ -22,7 +24,7 @@ const Header = () => {
     const user = useSelector((state) => state.user.user);
     const carts = useSelector((state) => state.cart.cart);
     const products = useSelector((state) => state.products.products)
-   
+
 
     const dispatch = useDispatch();
 
@@ -34,12 +36,19 @@ const Header = () => {
         }
     }, [currentUser])
 
+    useEffect(() => {
+        const handleClickOutSide = (event) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+                setShowSearch(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutSide);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutSide);
+        }
+    }, [])
 
 
-
-    // useEffect(() => {
-    //         dispatch(fetchCart())
-    // }, [dispatch]);
 
 
     const [searchItem, setSearchItem] = useState("");
@@ -229,21 +238,26 @@ const Header = () => {
                             <img src="/img/logo7.png" alt="" />
                         </a>
                     </div>
-                    <div className="timKiem">
+                    <div className="timKiem" ref={wrapperRef}>
                         <div className="divTimKiem">
-                            <input type="text" className="divTimKiemHang" onChange={(e) => { setSearchItem(e.target.value) }} placeholder="Hãy tìm sản phẩm mà bạn thích" style={{ opacity: '0.6' }} />
+                            <input type="text" className="divTimKiemHang" onChange={(e) => { setSearchItem(e.target.value), setShowSearch(true) }} placeholder="Hãy tìm sản phẩm mà bạn thích" style={{ opacity: '0.6' }} />
                             <div className="lichSuTimKiem">
-                                <div className="tieude">
-                                    <h4>Kết quả tìm kiếm</h4>
-                                </div>
-
-                                {filteredProducts.map(item => (
-                                    <Link key={item.id} style={{ textDecoration: "none" }} to={`/products/${item.id}`}>
-                                        <div onClick={() => handleToProduct(item.id)} key={item.id} className="noiDungTimKiem">
-                                            <img src={item.img} alt="" />
-                                            <p>{item.name}</p>
+                                {
+                                    showSearch && (
+                                        <div className="tieude">
+                                            <h4>Kết quả tìm kiếm</h4>
                                         </div>
-                                    </Link>
+                                    )
+
+                                }
+
+                                {showSearch && filteredProducts.length > 0 && filteredProducts.map(item => (
+                                    // <Link key={item.id} style={{ textDecoration: "none" }} to={`/products/${item.id}`}>
+                                    <div onClick={() => { handleToProduct(item.id), setShowSearch(false) }} key={item.id} className="noiDungTimKiem">
+                                        <img src={item.img} alt="" />
+                                        <p>{item.name}</p>
+                                    </div>
+                                    // </Link>
                                 ))}
 
                                 {/* <div className="noiDungTimKiem">
@@ -276,39 +290,7 @@ const Header = () => {
                                         </div>
                                     </div>
                                 ))}
-                                {/* <div className="sanPhamThongBao2">
-                                    <div className="hinh2">
-                                        <img src="assets/img/KhoaiTayChien.jpg" alt="" />
-                                    </div>
-                                    <div className="text2">
-                                        <h4 className="tieuDe2">Khoai Tây Chiên (Loại Vừa)</h4>
-                                    </div>
-                                    <div className="gia">
-                                        <p>125.000 VNĐ</p>
-                                    </div>
-                                </div>
-                                <div className="sanPhamThongBao2">
-                                    <div className="hinh2">
-                                        <img src="assets/img/GaQuayBanChay.jpg" alt="" />
-                                    </div>
-                                    <div className="text2">
-                                        <h4 className="tieuDe2">Gà Quay Nguyên Con</h4>
-                                    </div>
-                                    <div className="gia">
-                                        <p>350.000 VNĐ</p>
-                                    </div>
-                                </div>
-                                <div className="sanPhamThongBao2">
-                                    <div className="hinh2">
-                                        <img src="assets/img/Hamburger.jpg" alt="" />
-                                    </div>
-                                    <div className="text2">
-                                        <h4 className="tieuDe2">Hamburger Tôm</h4>
-                                    </div>
-                                    <div className="gia">
-                                        <p>450.000 VNĐ</p>
-                                    </div>
-                                </div> */}
+                             
                                 <div className="buttonXemALL2">
                                     <Link to={"/payment"} className="btnXemHet2">Xem Giỏ Hàng</Link>
                                 </div>

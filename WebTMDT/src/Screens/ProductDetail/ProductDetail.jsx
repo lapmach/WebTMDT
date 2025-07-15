@@ -49,7 +49,7 @@ const ProductDetail = () => {
         if (currentUser) {
             dispatch(addCart({ idProduct: id, quantity: count }))
                 .then(() => dispatch(fetchCart()));
-            toast.success('Mua hàng thành công!', {
+            toast.success('Đã thêm vào giỏ hàng thành công!', {
                 position: 'top-right',
                 autoClose: 2000,
                 hideProgressBar: false,

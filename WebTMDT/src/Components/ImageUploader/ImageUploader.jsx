@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function ImageUploader({ onUpload }) {
+function ImageUploader({ editPro ,  onUpload }) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState('');
+
+  useEffect(()=> {
+    setPreview(editPro.img);
+  }, [editPro])
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
