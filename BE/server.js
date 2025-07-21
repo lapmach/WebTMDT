@@ -234,14 +234,14 @@ app.get("/api/me", authenticateJWT, (req, res) => {
 
 
 // API categories
-app.get('/api/categories', authenticateJWT, (req, res) => {
+app.get('/api/categories', (req, res) => {
     const result = categories.map(item => {
         item.productList = products.filter(p => p.categoriesId === item.id)
         return item;
     })
     res.json(categories = result);
 });
-app.get('/api/categories/:id', authenticateJWT, (req, res) => {
+app.get('/api/categories/:id', (req, res) => {
     const category = categories.find((item) => item.id === req.params.id);
     if (category) res.json(category);
     else res.status(404).json({ message: 'Không tìm thấy danh mục' });
@@ -251,8 +251,8 @@ app.get('/api/categories/:id', authenticateJWT, (req, res) => {
 app.get('/api/news', authenticateJWT, (req, res) => res.json(news));
 
 // API Products
-app.get('/api/products', authenticateJWT, (req, res) => res.json(products));
-app.get('/api/products/:id', authenticateJWT, (req, res) => {
+app.get('/api/products', (req, res) => res.json(products));
+app.get('/api/products/:id', (req, res) => {
     const product = products.find((p) => p.id === req.params.id);
     if (product) res.json(product);
     else res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
@@ -295,7 +295,7 @@ app.delete('/api/products/:id', authenticateJWT, (req, res) => {
 
 // API Sản phẩm khuyến mãi
 
-app.get('/api/productsale', authenticateJWT, (req, res) => res.json(productSale));
+app.get('/api/productsale', (req, res) => res.json(productSale));
 app.get('/api/productsale/:id', authenticateJWT, (req, res) => {
     const productSale = productSale.find((p) => p.id === req.params.id);
     if (productSale) res.json(productSale);

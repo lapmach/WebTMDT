@@ -6,6 +6,8 @@ import "../../Screens/Login/login.css"
 const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPass] = useState("");
+    const [confirmPass , setConfirmpass] = useState("");
+    const [err, setErr] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const error = useSelector((state) => state.auth.error);
@@ -14,7 +16,10 @@ const Register = () => {
         e.preventDefault();
         console.log("email", email);
         console.log("pass", password);
-
+        if(confirmPass !== password){
+            setErr("Vui lòng nhập giống với mật khẩu ở trên !!!");
+            return;
+        }
 
         try {
             const data = await dispatch(register({ email, password }));
@@ -46,6 +51,14 @@ const Register = () => {
                             <i className="fa-solid fa-lock" />
                             <div className="valid-feedback" />
                             <div className="invalid-feedback">Vui lòng nhập mật khẩu</div>
+                        </div>
+                         <div className="mb-3 formDN">
+                            <input className="form-control input" id="pwd" name='ConfirmPassword' type='password' onChange={(e) => { setConfirmpass(e.target.value) }} value={confirmPass} required />
+                            <label htmlFor="pwd" className="form-label label">Xác Nhận Mật Khẩu</label>
+                            <i className="fa-solid fa-lock" />
+                            <div className="valid-feedback" />
+                            <div className="invalid-feedback">Vui lòng nhập xác nhận mật khẩu</div>
+                            { err && <p style={{ color: 'red' }}>{err}</p>}
                         </div>
                          {error && <p className='text-center' style={{ color: "red" }}>{error}</p>}
                         <button type="submit" className="btn btn-primary">Đăng Ký</button>

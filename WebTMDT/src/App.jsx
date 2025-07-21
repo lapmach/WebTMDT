@@ -33,9 +33,9 @@ function App() {
           <Route path='/admin' element={<Admin setEditPro = {setEditPro}/>}></Route>
           <Route path='/' element={<CommonPage/>}>
               <Route path='/home' element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <Home/>
-                </ProtectedRoute>
+                // </ProtectedRoute>
                 }></Route>
               <Route path='/login' element={<Login/>}></Route>
               <Route path='/register' element={<Register/>}></Route>

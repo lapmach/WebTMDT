@@ -107,7 +107,7 @@ const Payment = () => {
                                 <div className="col-lg-4 col-md-4">
                                     <label htmlFor="comment" className="mt-3">Vận chuyển:</label>
                                     <div className="form-check mt-2 divBorder">
-                                        <input onChange={(e) => { setShipCost(e.target.checked) }} required type="radio" className="form-check-input" id="radio1" name="optradio1" defaultValue="option" />Giao hàng tận nơi
+                                        <input onChange={(e) => { setShipCost(e.target.checked) }} type="radio" className="form-check-input" id="radio1" name="optradio1" defaultValue="option" />Giao hàng tận nơi
                                         <label className="form-check-label" htmlFor="radio1" />
                                         <span id="giaVanChuyen" style={{ marginLeft: '110px' }}>{SHIPPING_FEE} VND</span>
                                     </div>
@@ -166,7 +166,7 @@ const Payment = () => {
                                         </div>
                                         <div className="chiTietThanhToan1">
                                             <Link to={"/home"} style={{ cursor: 'pointer' }} className="mt-3 mx-3 anchor"><i className="fa-solid fa-chevron-left" />Quay lại trang chủ</Link>
-                                            <button type='submit' id="btnDatHang" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#myModal">ĐẶT HÀNG</button>
+                                            <button id="btnDatHang" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#myModal">ĐẶT HÀNG</button>
                                         </div>
 
                                         <div className="modal fade" id="myModal">

@@ -55,6 +55,8 @@ const ProductDetail = () => {
                 hideProgressBar: false,
                 theme: 'light',
             });
+        }else{
+            navigate("/login");
         }
         //    navigate("/payment");
     }

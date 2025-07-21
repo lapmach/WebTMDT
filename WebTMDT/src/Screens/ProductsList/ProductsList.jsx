@@ -244,13 +244,13 @@ const ProductsList = () => {
                             ))}
                      
                         </div>
-                        <div className="nutChuyenTrang">
+                        {/* <div className="nutChuyenTrang">
                             <div className="so1">1</div>
                             <div className="so2">2</div>
                             <div className="iconChuyenTrang">
                                 <i className="fa-solid fa-angles-right" />
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
